@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberShield | Digital Risk Protection</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#08111f;--panel:#111d31;--panel2:#16243a;--border:#293c59;--blue:#397cff;--cyan:#36d9e7;--text:#edf4ff;--muted:#9aacc5;--green:#31d6a0;--red:#ff657c;--yellow:#ffc857}
+body{font-family:Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.auth-page{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;background:radial-gradient(circle at top left,#16315b,transparent 40%),radial-gradient(circle at bottom right,#073d4c,transparent 35%),var(--bg)}
+.auth-card{width:100%;max-width:440px;padding:32px;background:rgba(17,29,49,.97);border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 70px #0006}
+.logo{font-size:25px;font-weight:bold;margin-bottom:12px}.logo span{color:var(--cyan)}.subtitle,.muted{color:var(--muted);line-height:1.6}.subtitle{margin-bottom:24px}
+.tabs{display:flex;gap:8px;margin-bottom:22px}.tabs button{flex:1;padding:11px;background:var(--panel2);border:1px solid var(--border);color:var(--muted);border-radius:9px}.tabs button.active{background:var(--blue);color:white}
+.field{margin-bottom:16px}.field label{display:block;font-size:13px;margin-bottom:8px;color:#d4e0f4}.field input,.field select{width:100%;padding:12px;background:#0b1729;border:1px solid var(--border);border-radius:9px;color:white;outline:none}.field input:focus,.field select:focus{border-color:var(--cyan)}
+.primary{width:100%;border:0;border-radius:9px;padding:13px;color:white;font-weight:bold;background:linear-gradient(100deg,var(--blue),#6257ef)}.secondary,.small-btn{background:var(--panel2);border:1px solid var(--border);color:white;padding:10px 13px;border-radius:8px}.message{margin-top:13px;font-size:13px;line-height:1.5;overflow-wrap:anywhere}.note{margin-top:20px;padding:12px;background:#0b1729;border-radius:9px;color:var(--muted);font-size:12px;line-height:1.7}
+.app{min-height:100vh;display:grid;grid-template-columns:235px minmax(0,1fr)}.sidebar{background:#0b1627;border-right:1px solid var(--border);padding:22px 14px;display:flex;flex-direction:column}.sidebar .logo{padding:0 9px 25px}.nav-label{color:#7488a4;font-size:11px;letter-spacing:1.5px;padding:10px}.nav-btn{width:100%;text-align:left;padding:12px;margin-bottom:5px;border:0;border-radius:9px;color:var(--muted);background:transparent}.nav-btn:hover,.nav-btn.active{background:#1b3150;color:white}.sidebar-bottom{margin-top:auto;padding-top:20px}.user-mini{padding:12px;margin-bottom:12px;border:1px solid var(--border);border-radius:10px;overflow-wrap:anywhere}.user-mini small{display:block;margin-top:5px;color:var(--muted)}.logout{width:100%;padding:11px;background:#281c2b;color:var(--red);border:1px solid #513044;border-radius:9px}
+.main{min-width:0}.topbar{padding:20px 28px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--border);background:#0c1728}.topbar h2{font-size:21px}.topbar p{color:var(--muted);font-size:12px;margin-top:5px}.status{background:#10382f;color:var(--green);padding:8px 11px;border-radius:20px;font-size:12px;white-space:nowrap}
+.content{padding:25px;max-width:1500px;margin:auto}.welcome{margin-bottom:22px}.welcome h1{font-size:26px;margin-bottom:8px}.welcome p{color:var(--muted);line-height:1.6}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}.stat,.card{background:var(--panel);border:1px solid var(--border);border-radius:13px}.stat{padding:18px}.stat-title{color:var(--muted);font-size:13px;margin-bottom:14px}.stat-number{font-size:29px;font-weight:bold;margin-bottom:8px}.stat-desc{color:var(--muted);font-size:11px;line-height:1.5}.card{padding:21px;margin-bottom:20px;min-width:0}.card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.card-head h3{font-size:17px}.section{display:none}.section.active{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}.risk-result{padding:18px;border:1px solid var(--border);border-radius:12px;background:#0b1729;margin-top:18px}.result-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.risk-score{font-size:32px;font-weight:bold}.pill{font-size:11px;padding:6px 9px;border-radius:6px;display:inline-block}.high{color:var(--red);background:#40202c}.medium{color:var(--yellow);background:#40341c}.low{color:var(--green);background:#10382f}.neutral{color:var(--cyan);background:#12323e}.check-list{padding-left:20px;line-height:1.8;font-size:13px;color:#d4e0f4;margin-top:12px}.help{font-size:12px;color:var(--muted);line-height:1.6;margin-top:12px}
+.table-wrap{width:100%;overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:600px;text-align:left}th{color:var(--muted);font-size:12px;font-weight:normal}th,td{padding:13px 10px;border-bottom:1px solid var(--border)}td{font-size:13px}.empty{text-align:center;padding:25px;color:var(--muted)}
+.activity{padding:12px 0;border-bottom:1px solid var(--border);font-size:13px;line-height:1.6}.activity:last-child{border-bottom:0}.activity small{display:block;color:var(--muted);margin-top:4px}
+.brand-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.brand-item{padding:15px;border:1px solid var(--border);border-radius:10px;background:#0d192b;overflow-wrap:anywhere}.brand-item p{color:var(--muted);font-size:12px;line-height:1.7;margin-top:6px}
+footer{color:#7488a4;font-size:11px;padding:10px 0 25px;text-align:center}
+@media(max-width:1050px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2{grid-template-columns:1fr}}
+@media(max-width:700px){.app{grid-template-columns:1fr}.sidebar{padding:13px;border-right:0;border-bottom:1px solid var(--border)}.sidebar .logo{padding-bottom:12px}.nav-label{display:none}.sidebar nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}.nav-btn{font-size:12px;padding:10px;margin:0}.sidebar-bottom{margin-top:12px;padding-top:8px}.topbar{padding:16px}.content{padding:14px}.card{padding:15px}.stats{gap:9px}.stat{padding:13px}.stat-number{font-size:23px}.brand-grid{grid-template-columns:1fr}.auth-card{padding:24px}}
+</style>
+</head>
+<body>
+<div id="authPage" class="auth-page"><div class="auth-card">
+  <div class="logo">🛡️ Cyber<span>Shield</span></div>
+  <p class="subtitle">Digital Risk Protection Platform<br>Review suspicious profiles and possible brand impersonation.</p>
+  <div class="tabs"><button id="loginTab" class="active" type="button" onclick="showAuth('login')">Sign In</button><button id="signupTab" type="button" onclick="showAuth('signup')">Sign Up</button></div>
+  <form id="authForm">
+    <div id="nameField" class="field hidden"><label>Full Name</label><input id="fullName" autocomplete="name" placeholder="Enter your name"></div>
+    <div class="field"><label>Email Address</label><input id="email" type="email" required autocomplete="email" placeholder="student@example.com"></div>
+    <div class="field"><label>Password</label><input id="password" type="password" required minlength="8" autocomplete="current-password" placeholder="At least 8 characters"></div>
+    <button id="authSubmit" class="primary" type="submit">Sign In Securely</button><p id="authMessage" class="message" role="status"></p>
+  </form>
+  <div class="note"><strong>College project demo</strong><br>Create an account, then sign in. This prototype stores demo data in your browser only. Do not use a real or reused password. This is not production-grade authentication.</div>
+</div></div>
+
+<div id="app" class="app hidden">
+<aside class="sidebar">
+  <div class="logo">🛡️ Cyber<span>Shield</span></div><div class="nav-label">WORKSPACE</div>
+  <nav>
+    <button class="nav-btn active" onclick="navigate('dashboard',this)">▦ Dashboard</button>
+    <button class="nav-btn" onclick="navigate('checker',this)">◎ Account Checker</button>
+    <button class="nav-btn" onclick="navigate('profiles',this)">◉ Sample Profiles</button>
+    <button class="nav-btn" onclick="navigate('apps',this)">▣ Mobile Apps</button>
+    <button class="nav-btn" onclick="navigate('brands',this)">◈ Brand Management</button>
+    <button class="nav-btn" onclick="navigate('reports',this)">▤ Reports</button>
+  </nav>
+  <div class="sidebar-bottom"><div class="user-mini"><strong id="sidebarName">User</strong><small id="sidebarEmail">user@example.com</small></div><button class="logout" onclick="logout()">↪ Logout</button></div>
+</aside>
+<main class="main">
+<header class="topbar"><div><h2 id="pageTitle">Security Dashboard</h2><p>Digital Risk Protection & Threat Monitoring</p></div><div class="status">● Demo System Online</div></header>
+<div class="content">
+<section id="dashboard" class="section active">
+  <div class="welcome"><h1>Welcome, <span id="welcomeName">User</span> 👋</h1><p>Check account indicators, review sample risks, and manage brands from one workspace.</p></div>
+  <div class="stats">
+    <div class="stat"><div class="stat-title">Monitored Brands</div><div class="stat-number" id="brandCount">0</div><div class="stat-desc">Brands in workspace</div></div>
+    <div class="stat"><div class="stat-title">Profiles Checked</div><div class="stat-number" id="checksCount">0</div><div class="stat-desc">Checks saved in this browser</div></div>
+    <div class="stat"><div class="stat-title">High-Risk Results</div><div class="stat-number" id="highCount">0</div><div class="stat-desc">Preliminary risk indicators</div></div>
+    <div class="stat"><div class="stat-title">Sample Apps</div><div class="stat-number">4</div><div class="stat-desc">Fictional demo records</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><div class="card-head"><h3>🔎 Quick Account Check</h3><span class="pill neutral">Heuristic demo</span></div>
+      <div class="field"><label>Platform</label><select id="quickPlatform"><option>Instagram</option><option>Facebook</option><option>X</option><option>TikTok</option><option>LinkedIn</option><option>YouTube</option><option>Other</option></select></div>
+      <div class="field"><label>Username or profile URL</label><input id="quickAccount" placeholder="@brand_support or profile URL"></div>
+      <button class="primary" onclick="quickCheck()">Check Account</button><p class="help">The checker looks for patterns only; it cannot access live social media accounts.</p>
+    </div>
+    <div class="card"><div class="card-head"><h3>Recent Activity</h3></div><div id="activityList"><div class="empty">No activity yet.</div></div></div>
+  </div>
+  <div class="card"><div class="card-head"><h3>Safety reminder</h3></div><p class="muted">Never send money, passwords, login codes, or identity documents to an account just because it looks official. Open the platform directly and compare the account with the organization's official website.</p></div>
+</section>
+
+<section id="checker" class="section">
+  <div class="welcome"><h1>Social Account Authenticity Checker</h1><p>Enter one account to review suspicious patterns and see practical verification steps.</p></div>
+  <div class="card">
+    <div class="grid2">
+      <div class="field"><label>Social Platform</label><select id="platform"><option>Instagram</option><option>Facebook</option><option>X</option><option>TikTok</option><option>LinkedIn</option><option>YouTube</option><option>Other</option></select></div>
+      <div class="field"><label>Account username or profile URL</label><input id="accountInput" placeholder="@example_support or https://..."></div>
+    </div>
+    <div class="field"><label>Official brand / person name (optional)</label><input id="officialName" placeholder="Example: Example Bank"></div>
+    <button class="primary" onclick="checkAccount()">Analyze Account</button>
+    <p class="help">Use a public username or URL only. Do not enter passwords, private messages, verification codes, or other sensitive information.</p>
+    <div id="checkerResult" aria-live="polite"></div>
+  </div>
+  <div class="card"><h3>How to confirm an account</h3><ol class="check-list"><li>Open the organization's official website yourself and follow its social links.</li><li>Check the platform's own verification indicator and what it means on that platform.</li><li>Compare the exact username, spelling, website link, and contact details.</li><li>Be cautious about urgent payment requests, login links, prizes, or requests for security codes.</li><li>If uncertain, contact the organization using details from its official website.</li></ol></div>
+</section>
+
+<section id="profiles" class="section"><div class="welcome"><h1>Sample Social Profiles</h1><p>Fictional sample data for demonstrating the dashboard.</p></div><div class="card"><div class="table-wrap"><table><thead><tr><th>Profile</th><th>Platform</th><th>Demo Risk</th><th>Reason</th></tr></thead><tbody id="profileTable"></tbody></table></div><p class="help">These records are fictional. A risk label is not proof that an account is fraudulent.</p></div></section>
+
+<section id="apps" class="section"><div class="welcome"><h1>Mobile App Monitoring</h1><p>Example app-risk records for the project demonstration.</p></div><div class="card"><div class="table-wrap"><table><thead><tr><th>Application</th><th>Platform</th><th>Demo Risk</th><th>Reason</th></tr></thead><tbody id="appTable"></tbody></table></div><p class="help">No real app stores or installed applications are scanned.</p></div></section>
+
+<section id="brands" class="section"><div class="welcome"><h1>Brand Management</h1><p>Add the official details you want to compare during reviews.</p></div><div class="card"><form id="brandForm"><div class="grid2"><div class="field"><label>Brand name</label><input id="brandName" required placeholder="Brand name"></div><div class="field"><label>Official website URL</label><input id="brandWebsite" type="url" placeholder="https://example.com"></div></div><div class="field"><label>Official social profile URL (optional)</label><input id="brandSocial" type="url" placeholder="https://..."></div><button class="primary" type="submit">+ Add Brand</button></form></div><div class="card"><div class="card-head"><h3>Your Monitored Brands</h3></div><div id="brandList" class="brand-grid"></div></div></section>
+
+<section id="reports" class="section"><div class="welcome"><h1>Security Reports</h1><p>Export your local account-check history to CSV.</p></div><div class="card"><div class="card-head"><h3>Account Check History</h3><button class="secondary" onclick="exportChecks()">Export CSV</button></div><div class="table-wrap"><table><thead><tr><th>Account</th><th>Platform</th><th>Risk score</th><th>Assessment</th><th>Time</th></tr></thead><tbody id="historyTable"></tbody></table></div><p class="help">The report records heuristic assessments, not verified platform facts.</p></div></section>
+<footer>CyberShield DRP · College Project Demonstration · HTML, CSS & JavaScript</footer>
+</div></main></div>
+
+<script>
+const DB={users:"cs_demo_users_v2",session:"cs_demo_session_v2",brands:"cs_demo_brands_v2",checks:"cs_demo_checks_v2",activities:"cs_demo_activities_v2"};
+let authMode="login";
+const sampleProfiles=[
+ {brand:"ExampleBank",profile:"@examplebank_support",platform:"Instagram",risk:"High",reason:"Support-style name; official identity not confirmed"},
+ {brand:"ExampleBank",profile:"@examplebank_official_help",platform:"Facebook",risk:"Medium",reason:"Requires comparison with the official profile"},
+ {brand:"ShopExample",profile:"@shop-example-gifts",platform:"Instagram",risk:"High",reason:"Promotional identity needs verification"},
+ {brand:"TechExample",profile:"@techexample_news",platform:"X",risk:"Low",reason:"No decisive evidence in this fictional sample"}
+];
+const sampleApps=[
+ {name:"ExampleBank Rewards Plus",platform:"Android",risk:"High",reason:"Publisher is unverified in fictional sample"},
+ {name:"ShopExample Bonus",platform:"Android",risk:"Medium",reason:"Brand-like app name"},
+ {name:"TechExample Official",platform:"iOS",risk:"Low",reason:"Publisher identity requires verification"},
+ {name:"ExampleBank Secure Update",platform:"Android",risk:"High",reason:"Potentially misleading app name"}
+];
+function read(key,fallback){try{const v=localStorage.getItem(key);return v===null?fallback:JSON.parse(v)}catch(e){return fallback}}
+function save(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true}catch(e){alert("Browser storage is unavailable or full.");return false}}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function showAuth(mode){authMode=mode;document.getElementById("loginTab").classList.toggle("active",mode==="login");document.getElementById("signupTab").classList.toggle("active",mode==="signup");document.getElementById("nameField").classList.toggle("hidden",mode!=="signup");document.getElementById("fullName").required=mode==="signup";document.getElementById("authSubmit").textContent=mode==="login"?"Sign In Securely":"Create Account";document.getElementById("password").autocomplete=mode==="signup"?"new-password":"current-password";document.getElementById("authMessage").textContent=""}
+document.getElementById("authForm").addEventListener("submit",e=>{e.preventDefault();const name=document.getElementById("fullName").value.trim(),email=document.getElementById("email").value.trim().toLowerCase(),password=document.getElementById("password").value,msg=document.getElementById("authMessage");if(password.length<8){msg.style.color="var(--red)";msg.textContent="Password must contain at least 8 characters.";return}const users=read(DB.users,[]);if(authMode==="signup"){if(name.length<2){msg.style.color="var(--red)";msg.textContent="Enter your name.";return}if(users.some(u=>u.email===email)){msg.style.color="var(--red)";msg.textContent="Email already exists. Please sign in.";return}users.push({name,email,password});if(!save(DB.users,users))return;showAuth("login");document.getElementById("email").value=email;msg.style.color="var(--green)";msg.textContent="Account created. Please sign in."}else{const user=users.find(u=>u.email===email&&u.password===password);if(!user){msg.style.color="var(--red)";msg.textContent="Invalid email or password. Check details or sign up.";return}save(DB.session,{name:user.name,email:user.email});openApp()}});
+function openApp(){const s=read(DB.session,null);if(!s)return;document.getElementById("authPage").classList.add("hidden");document.getElementById("app").classList.remove("hidden");document.getElementById("welcomeName").textContent=s.name;document.getElementById("sidebarName").textContent=s.name;document.getElementById("sidebarEmail").textContent=s.email;refresh()}
+function logout(){localStorage.removeItem(DB.session);document.getElementById("app").classList.add("hidden");document.getElementById("authPage").classList.remove("hidden");document.getElementById("password").value="";showAuth("login")}
+function navigate(id,button){document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===id));document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));if(button)button.classList.add("active");const titles={dashboard:"Security Dashboard",checker:"Account Authenticity Checker",profiles:"Social Profile Monitoring",apps:"Mobile App Monitoring",brands:"Brand Management",reports:"Security Reports"};document.getElementById("pageTitle").textContent=titles[id]||"CyberShield";refresh()}
+function addActivity(text){const a=read(DB.activities,[]);a.unshift({text,time:new Date().toLocaleString()});save(DB.activities,a.slice(0,12));renderActivity()}
+function renderActivity(){const a=read(DB.activities,[]);document.getElementById("activityList").innerHTML=a.length?a.slice(0,6).map(x=>`<div class="activity">${esc(x.text)}<small>${esc(x.time)}</small></div>`).join(""):'<div class="empty">No activity yet.</div>'}
+function riskClass(r){return r==="High"?"high":r==="Medium"?"medium":r==="Low"?"low":"neutral"}
+function renderSamples(){document.getElementById("profileTable").innerHTML=sampleProfiles.map(p=>`<tr><td>${esc(p.profile)}<br><small class="muted">${esc(p.brand)}</small></td><td>${esc(p.platform)}</td><td><span class="pill ${riskClass(p.risk)}">${p.risk}</span></td><td>${esc(p.reason)}</td></tr>`).join("");document.getElementById("appTable").innerHTML=sampleApps.map(a=>`<tr><td>${esc(a.name)}</td><td>${esc(a.platform)}</td><td><span class="pill ${riskClass(a.risk)}">${a.risk}</span></td><td>${esc(a.reason)}</td></tr>`).join("")}
+function normalizeAccount(input){let value=input.trim();if(!value)return "";try{if(/^https?:\/\//i.test(value)){const u=new URL(value);const parts=u.pathname.split("/").filter(Boolean);value=parts[0]||u.hostname}}catch(e){}return value.replace(/^@/,"").replace(/\/.*$/,"").trim()}
+function checkAccount(){runCheck(document.getElementById("platform").value,document.getElementById("accountInput").value,document.getElementById("officialName").value, "checkerResult")}
+function quickCheck(){const account=document.getElementById("quickAccount").value;const platform=document.getElementById("quickPlatform").value;navigate("checker",document.querySelectorAll(".nav-btn")[1]);document.getElementById("accountInput").value=account;document.getElementById("platform").value=platform;checkAccount()}
+function runCheck(platform,raw,official,target){const input=String(raw||"").trim(),name=String(official||"").trim();const output=document.getElementById(target)||document.getElementById("checkerResult");if(!input){output.innerHTML='<p class="message" style="color:var(--red)">Please enter a username or profile URL.</p>';return}const account=normalizeAccount(input);if(!account){output.innerHTML='<p class="message" style="color:var(--red)">Could not read the account name. Please check the input.</p>';return}
+let score=10,reasons=["A username or URL alone cannot establish account authenticity."];
+if(!/^https?:\/\//i.test(input)&&input.includes(" ")){score+=15;reasons.push("The input contains spaces; confirm the exact username.")}if(/[0-9]{4,}/.test(account)){score+=12;reasons.push("Several consecutive digits appear in the username; this is only a weak signal.")}if(/(support|help|security|verify|official|admin|team|service|alert|backup|rewards|claim)/i.test(account)){score+=18;reasons.push("The username uses support, verification, or promotional wording. Legitimate accounts can use these terms too.")}if(/[_\-.]{2,}/.test(account)){score+=10;reasons.push("Repeated punctuation may make a name harder to distinguish from another account.")}if(account.length>25){score+=8;reasons.push("The username is unusually long; compare it with the official profile.")}if(name){const a=account.toLowerCase().replace(/[^a-z0-9]/g,""),b=name.toLowerCase().replace(/[^a-z0-9]/g,"");if(a&&b&&!a.includes(b)&&!b.includes(a)){score+=20;reasons.push("The username does not clearly match the supplied official name. This can also happen with legitimate handles.")}else{reasons.push("The username resembles the supplied name, but resemblance is not proof of authenticity.")}}
+score=Math.min(95,score);let label=score>=50?"Elevated risk indicators":score>=25?"Needs manual verification":"Few pattern-based warnings";let cls=score>=50?"high":score>=25?"medium":"low";let result={platform,account,score,label,time:new Date().toLocaleString(),reasons};const history=read(DB.checks,[]);history.unshift(result);save(DB.checks,history.slice(0,100));addActivity("Checked "+platform+" account @"+account+" — "+label+".");output.innerHTML=`<div class="risk-result"><div class="result-top"><div><div class="muted">${esc(platform)} · @${esc(account)}</div><div class="risk-score">${score}/100</div><div><span class="pill ${cls}">${esc(label)}</span></div></div><span class="pill neutral">Preliminary only</span></div><p class="help">This score reflects simple username-pattern rules, not a live account lookup. It does not mean the account is definitely fake or genuine.</p><h4 style="margin-top:16px">Analysis notes</h4><ul class="check-list">${reasons.map(r=>`<li>${esc(r)}</li>`).join("")}</ul><h4 style="margin-top:16px">Next steps</h4><ul class="check-list"><li>Find the official website independently and follow its social-media link.</li><li>Compare the exact handle, profile history, and external links.</li><li>Check the platform's own verification details; badges can have different meanings.</li><li>Do not send money, passwords, or login codes until you verify independently.</li></ul></div>`;refreshStats()}
+function getBrands(){return read(DB.brands,[])}function refreshStats(){const checks=read(DB.checks,[]);document.getElementById("checksCount").textContent=checks.length;document.getElementById("highCount").textContent=checks.filter(c=>c.score>=50).length;document.getElementById("brandCount").textContent=getBrands().length;document.getElementById("historyTable").innerHTML=checks.length?checks.map(c=>`<tr><td>@${esc(c.account)}</td><td>${esc(c.platform)}</td><td>${c.score}/100</td><td><span class="pill ${c.score>=50?"high":c.score>=25?"medium":"low"}">${esc(c.label)}</span></td><td>${esc(c.time)}</td></tr>`).join(""):'<tr><td colspan="5" class="empty">No checks yet.</td></tr>'}
+function renderBrands(){const b=getBrands();document.getElementById("brandList").innerHTML=b.length?b.map((x,i)=>`<div class="brand-item"><strong>◈ ${esc(x.name)}</strong><p>Website: ${x.website?esc(x.website):"Not provided"}</p><p>Social: ${x.social?esc(x.social):"Not provided"}</p><button class="small-btn" style="margin-top:10px" onclick="deleteBrand(${i})">Remove</button></div>`).join(""):'<div class="empty">No brands added yet.</div>'}
+document.getElementById("brandForm").addEventListener("submit",e=>{e.preventDefault();const name=document.getElementById("brandName").value.trim(),website=document.getElementById("brandWebsite").value.trim(),social=document.getElementById("brandSocial").value.trim(),b=getBrands();if(b.some(x=>x.name.toLowerCase()===name.toLowerCase())){alert("This brand already exists.");return}b.push({name,website,social});if(!save(DB.brands,b))return;e.target.reset();addActivity("Added brand: "+name);refresh();alert("Brand added.")});
+function deleteBrand(i){const b=getBrands();if(!b[i]||!confirm("Remove "+b[i].name+"?"))return;const name=b[i].name;b.splice(i,1);save(DB.brands,b);addActivity("Removed brand: "+name);refresh()}
+function exportChecks(){const checks=read(DB.checks,[]);if(!checks.length){alert("No account checks to export yet.");return}downloadCSV("cybershield-account-checks.csv",[["Account","Platform","Risk Score","Assessment","Time"],...checks.map(c=>[c.account,c.platform,c.score,c.label,c.time])])}
+function downloadCSV(filename,rows){const csv=rows.map(row=>row.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function refresh(){refreshStats();renderActivity();renderBrands();renderSamples()}
+try{const s=read(DB.session,null);if(s&&s.email&&s.name)openApp()}catch(e){console.error(e)}
+</script>
+</body>
+</html>

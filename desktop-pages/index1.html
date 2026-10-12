@@ -1,0 +1,905 @@
+/*
+ CYBERSHIELD DRP — COMPLETE SINGLE-FILE WEBSITE + BACKEND
+ Save as: server.js
+
+ Run:
+   npm install express
+   node server.js
+
+ Open:
+   http://localhost:3000
+
+ Owner:
+   owner@cybershield.drp
+   owner@123
+
+ Demo user:
+   user@cybershield.drp
+   User@123
+
+ Data is stored in cybershield-data.json.
+ Demo scans are simulated, not live security scans.
+*/
+
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
+const crypto = require("crypto");
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+const FILE = path.join(__dirname, "cybershield-data.json");
+
+app.disable("x-powered-by");
+app.use(express.json({ limit: "100kb" }));
+
+function passwordHash(password, salt) {
+  return crypto.scryptSync(password, salt, 64).toString("hex");
+}
+
+function createUser(name, email, password, role) {
+  const salt = crypto.randomBytes(16).toString("hex");
+  return {
+    id: crypto.randomUUID(),
+    name,
+    email: email.toLowerCase(),
+    salt,
+    passwordHash: passwordHash(password, salt),
+    role
+  };
+}
+
+function initialDB() {
+  return {
+    brand: {
+      name: "Acme Technologies",
+      website: "https://example.com",
+      social: "https://instagram.com/acmeofficial\nhttps://linkedin.com/company/acme",
+      apps: "Acme Official App",
+      identifiers: "Acme, Acme Support"
+    },
+    users: [
+      createUser("Owner", "owner@cybershield.drp", "owner@123", "owner"),
+      createUser("Demo User", "user@cybershield.drp", "User@123", "user")
+    ],
+    urls: [],
+    threats: [
+      {id: crypto.randomUUID(), title: "Acme Support Helpdesk", source: "Demo Social Platform", type: "social", score: 96, status: "Open", detail: "Simulated brand impersonation"},
+      {id: crypto.randomUUID(), title: "Acme Rewards Official", source: "Demo Social Platform", type: "social", score: 82, status: "Review", detail: "Simulated suspicious page"},
+      {id: crypto.randomUUID(), title: "Acme Wallet Plus", source: "Demo App Catalog", type: "app", score: 94, status: "Open", detail: "Simulated similar app branding"},
+      {id: crypto.randomUUID(), title: "Acme Customer Service", source: "Demo Social Platform", type: "social", score: 61, status: "Review", detail: "Simulated look-alike name"},
+      {id: crypto.randomUUID(), title: "Acme Finance Helper", source: "Demo App Catalog", type: "app", score: 79, status: "Open", detail: "Simulated unverified publisher"},
+      {id: crypto.randomUUID(), title: "Acme Community", source: "Demo Social Platform", type: "social", score: 25, status: "Resolved", detail: "Simulated profile reviewed"}
+    ],
+    activity: ["CyberShield DRP initialized"]
+  };
+}
+
+let db;
+
+try {
+  db = fs.existsSync(FILE)
+    ? JSON.parse(fs.readFileSync(FILE, "utf8"))
+    : initialDB();
+} catch {
+  db = initialDB();
+}
+
+function save() {
+  const temp = FILE + ".tmp";
+  fs.writeFileSync(temp, JSON.stringify(db, null, 2));
+  fs.renameSync(temp, FILE);
+}
+
+if (!fs.existsSync(FILE)) save();
+
+const sessions = new Map();
+
+function log(message) {
+  db.activity.unshift(new Date().toLocaleString() + " — " + message);
+  db.activity = db.activity.slice(0, 30);
+  save();
+}
+
+function safeUser(u) {
+  return {id: u.id, name: u.name, email: u.email, role: u.role};
+}
+
+function risk(score) {
+  return score >= 90 ? "Critical" :
+         score >= 75 ? "High" :
+         score >= 45 ? "Medium" : "Low";
+}
+
+function auth(req, res, next) {
+  const token = (req.headers.authorization || "").replace(/^Bearer /, "");
+  const session = sessions.get(token);
+  const user = session && db.users.find(u => u.id === session.userId);
+
+  if (!user) return res.status(401).json({error: "Please log in again."});
+
+  req.user = user;
+  req.token = token;
+  next();
+}
+
+function owner(req, res, next) {
+  if (req.user.role !== "owner") {
+    return res.status(403).json({error: "Owner access required."});
+  }
+  next();
+}
+
+function validUrl(value) {
+  try {
+    const u = new URL(value);
+    return ["http:", "https:"].includes(u.protocol) ? u.href : null;
+  } catch {
+    return null;
+  }
+}
+
+/* ================= BACKEND API ================= */
+
+/* Register a normal user */
+app.post("/api/register", (req, res) => {
+  const name = String(req.body.name || "").trim();
+  const email = String(req.body.email || "").trim().toLowerCase();
+  const password = String(req.body.password || "");
+
+  if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({error: "Enter a valid name and email."});
+  }
+  if (password.length < 8) {
+    return res.status(400).json({error: "Password must contain at least 8 characters."});
+  }
+  if (db.users.some(u => u.email === email)) {
+    return res.status(409).json({error: "Email already registered."});
+  }
+
+  const u = createUser(name, email, password, "user");
+  db.users.push(u);
+  log("Registered user: " + email);
+
+  const token = crypto.randomBytes(32).toString("hex");
+  sessions.set(token, {userId: u.id});
+
+  res.status(201).json({token, user: safeUser(u)});
+});
+
+/* Login */
+app.post("/api/login", (req, res) => {
+  const email = String(req.body.email || "").trim().toLowerCase();
+  const password = String(req.body.password || "");
+  const u = db.users.find(x => x.email === email);
+
+  if (!u) return res.status(401).json({error: "Invalid email or password."});
+
+  const supplied = Buffer.from(passwordHash(password, u.salt), "hex");
+  const saved = Buffer.from(u.passwordHash, "hex");
+
+  if (supplied.length !== saved.length ||
+      !crypto.timingSafeEqual(supplied, saved)) {
+    return res.status(401).json({error: "Invalid email or password."});
+  }
+
+  const token = crypto.randomBytes(32).toString("hex");
+  sessions.set(token, {userId: u.id});
+  log("Login: " + email);
+  res.json({token, user: safeUser(u)});
+});
+
+app.post("/api/logout", auth, (req, res) => {
+  sessions.delete(req.token);
+  res.json({message: "Logged out."});
+});
+
+app.get("/api/me", auth, (req, res) => {
+  res.json({user: safeUser(req.user)});
+});
+
+/* Dashboard data */
+app.get("/api/dashboard", auth, (req, res) => {
+  const t = db.threats;
+  res.json({
+    stats: {
+      total: t.length,
+      high: t.filter(x => x.score >= 75).length,
+      social: t.filter(x => x.type === "social").length,
+      apps: t.filter(x => x.type === "app").length,
+      unresolved: t.filter(x => x.status !== "Resolved").length,
+      resolved: t.filter(x => x.status === "Resolved").length
+    },
+    threats: [...t].sort((a, b) => b.score - a.score).slice(0, 5),
+    activity: db.activity.slice(0, 10)
+  });
+});
+
+/* Search and filter threats */
+app.get("/api/threats", auth, (req, res) => {
+  const q = String(req.query.search || "").toLowerCase();
+  const type = String(req.query.type || "");
+  const level = String(req.query.risk || "");
+  const status = String(req.query.status || "");
+
+  const result = db.threats.filter(t =>
+    (!q || (t.title + " " + t.source + " " + t.detail).toLowerCase().includes(q)) &&
+    (!type || t.type === type) &&
+    (!level || risk(t.score) === level) &&
+    (!status || t.status === status)
+  ).sort((a, b) => b.score - a.score);
+
+  res.json(result.map(t => ({...t, risk: risk(t.score)})));
+});
+
+/* Update threat status */
+app.patch("/api/threats/:id", auth, (req, res) => {
+  const t = db.threats.find(x => x.id === req.params.id);
+  if (!t) return res.status(404).json({error: "Threat not found."});
+
+  if (!["Open", "Review", "Resolved"].includes(req.body.status)) {
+    return res.status(400).json({error: "Invalid status."});
+  }
+
+  t.status = req.body.status;
+  log(t.status + ": " + t.title);
+  res.json(t);
+});
+
+/* Demo social, app, or combined scan */
+app.post("/api/scan/:type", auth, (req, res) => {
+  const type = req.params.type;
+  if (!["all", "social", "app"].includes(type)) {
+    return res.status(400).json({error: "Invalid scan type."});
+  }
+
+  const samples = [
+    {title: "Acme Customer Care 24x7", source: "Demo Social Platform", type: "social", score: 93, detail: "Simulated brand-like support account"},
+    {title: "Acme Bonus Rewards", source: "Demo Social Platform", type: "social", score: 81, detail: "Simulated suspicious promotional page"},
+    {title: "Acme Help Centre", source: "Demo Social Platform", type: "social", score: 57, detail: "Simulated look-alike name"},
+    {title: "Acme Wallet Pro", source: "Demo App Catalog", type: "app", score: 95, detail: "Simulated unverified publisher"},
+    {title: "Acme Rewards App", source: "Demo App Catalog", type: "app", score: 82, detail: "Simulated similar branding"},
+    {title: "Acme Secure Assistant", source: "Demo App Catalog", type: "app", score: 60, detail: "Simulated app metadata mismatch"}
+  ].filter(x => type === "all" || x.type === type);
+
+  let added = 0;
+  for (const s of samples) {
+    if (db.threats.some(t => t.title === s.title && t.type === s.type)) continue;
+    db.threats.push({...s, id: crypto.randomUUID(), status: "Open"});
+    added++;
+  }
+
+  log("Demo scan by " + req.user.email + "; added " + added);
+  res.json({message: "Demo scan completed. No live services scanned.", added});
+});
+
+/* URL list: users see their own, owner sees all */
+app.get("/api/urls", auth, (req, res) => {
+  res.json(db.urls.filter(u =>
+    req.user.role === "owner" || u.addedBy === req.user.email
+  ));
+});
+
+/* Add URL */
+app.post("/api/urls", auth, (req, res) => {
+  const name = String(req.body.name || "").trim();
+  const url = validUrl(String(req.body.url || "").trim());
+
+  if (!name || !url) {
+    return res.status(400).json({error: "Enter a name and valid HTTP/HTTPS URL."});
+  }
+
+  const item = {
+    id: crypto.randomUUID(),
+    name,
+    url,
+    addedBy: req.user.email,
+    createdAt: new Date().toISOString()
+  };
+
+  db.urls.push(item);
+  log("URL added by " + req.user.email + ": " + name);
+  res.status(201).json(item);
+});
+
+/* Delete URL: owner or original submitter */
+app.delete("/api/urls/:id", auth, (req, res) => {
+  const item = db.urls.find(u => u.id === req.params.id);
+  if (!item) return res.status(404).json({error: "URL not found."});
+
+  if (req.user.role !== "owner" && item.addedBy !== req.user.email) {
+    return res.status(403).json({error: "You cannot delete another user's URL."});
+  }
+
+  db.urls = db.urls.filter(u => u.id !== item.id);
+  log("URL deleted: " + item.name);
+  res.json({message: "URL deleted."});
+});
+
+/* Owner-only user list and all URLs */
+app.get("/api/users", auth, owner, (req, res) => {
+  res.json(db.users.map(safeUser));
+});
+
+app.get("/api/owner/urls", auth, owner, (req, res) => {
+  res.json(db.urls);
+});
+
+/* Brand profile */
+app.get("/api/brand", auth, (req, res) => {
+  res.json(db.brand);
+});
+
+app.put("/api/brand", auth, owner, (req, res) => {
+  const b = req.body;
+  const name = String(b.name || "").trim();
+
+  if (!name) return res.status(400).json({error: "Brand name is required."});
+
+  db.brand = {
+    name,
+    website: String(b.website || "").trim(),
+    social: String(b.social || "").trim(),
+    apps: String(b.apps || "").trim(),
+    identifiers: String(b.identifiers || "").trim()
+  };
+
+  log("Brand profile updated");
+  res.json(db.brand);
+});
+
+/* CSV export */
+app.get("/api/report.csv", auth, (req, res) => {
+  const quote = v => '"' + String(v ?? "").replace(/"/g, '""') + '"';
+  const rows = [
+    ["ID", "Title", "Source", "Type", "Risk", "Score", "Status", "Detail"],
+    ...db.threats.map(t => [
+      t.id, t.title, t.source, t.type, risk(t.score), t.score, t.status, t.detail
+    ])
+  ];
+
+  res.type("text/csv; charset=utf-8");
+  res.attachment("cybershield-threat-report.csv");
+  res.send("\uFEFF" + rows.map(r => r.map(quote).join(",")).join("\r\n"));
+});
+
+/* ================= FRONTEND ================= */
+
+app.get("/", (req, res) => {
+  res.type("html").send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CyberShield DRP</title>
+<style>
+*{box-sizing:border-box}
+:root{--bg:#08111f;--panel:#111d31;--border:#293c59;--blue:#397cff;--cyan:#36d9e7;--muted:#a0b0c9}
+body{margin:0;background:var(--bg);color:#edf4ff;font:15px Arial,sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer;background:var(--blue);color:white;border:0;padding:10px 13px;border-radius:8px;margin:3px}
+input,textarea,select{width:100%;padding:11px;background:#091426;border:1px solid var(--border);border-radius:8px;color:white;margin:5px 0 13px}
+label{display:block;font-size:13px;color:#b7c8df}
+.hidden{display:none!important}
+.logo{font-size:23px;font-weight:bold}.logo span{color:var(--cyan)}
+.card,.panel,.stat{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:15px}
+.auth{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+.hero{padding:40px;display:flex;flex-direction:column;justify-content:center;background:radial-gradient(ellipse at top left,#174c7d,transparent 55%),linear-gradient(135deg,#111e37,#080e1b)}
+.hero h1{font-size:clamp(32px,4vw,48px)}.hero h1 span{color:var(--cyan)}.hero p{color:#bdcce0;line-height:1.8}
+.auth-side{padding:20px;display:grid;place-items:center}.login-card{width:100%;max-width:420px}
+.small{font-size:12px;color:var(--muted);line-height:1.7}.link{background:none;color:var(--cyan)}
+.demo,.notice{margin-top:12px;padding:12px;background:#091426;border:1px solid var(--border);font-size:12px;line-height:1.8;border-radius:8px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:15px 20px;background:#0c1729;border-bottom:1px solid var(--border)}
+.layout{display:flex;min-height:calc(100vh - 65px)}.sidebar{width:220px;flex-shrink:0;background:#0c1729;padding:12px}
+.nav{display:block;width:100%;text-align:left;background:none;color:#b8c7dd;margin-bottom:5px}
+.nav.active,.nav:hover{background:#1c3151}.main{flex:1;min-width:0;padding:20px}
+.page{display:none}.page.active{display:block}.heading{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.heading p{color:var(--muted);font-size:13px}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.number{font-size:28px;font-weight:bold;margin:12px 0}.grid{display:grid;grid-template-columns:1.3fr 1fr;gap:14px}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:520px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--border);font-size:12px}
+th{color:#9db0cc}.badge{display:inline-block;padding:5px 8px;border-radius:5px;font-size:10px;font-weight:bold}
+.Critical{background:#672c3a;color:#ff9eaa}.High{background:#613b25;color:#ffbf85}
+.Medium{background:#554b25;color:#f5dc86}.Low{background:#164b40;color:#8fe9c5}
+.Open{background:#233e68;color:#b7d2ff}.Review{background:#574725;color:#ffe09a}
+.Resolved{background:#164b40;color:#8fe9c5}.secondary{background:#2a3b57}.green{background:#146c53}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px}.toolbar>*{flex:1;min-width:130px}
+.bar{height:8px;background:#2b3b55;border-radius:9px;overflow:hidden}.fill{height:8px;background:var(--blue)}
+.activity{padding:9px;border-left:2px solid #38506e;font-size:12px;margin:8px 0;overflow-wrap:anywhere}
+a{color:var(--cyan);overflow-wrap:anywhere}.footer{text-align:center;color:#788ba8;font-size:11px;padding:20px}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:1fr}}
+@media(max-width:650px){.auth{grid-template-columns:1fr}.hero{padding:25px}.features{display:none}.layout{display:block}
+.sidebar{width:100%;display:flex;overflow-x:auto;padding:7px}.nav{white-space:nowrap;width:auto}
+.main{padding:12px 9px}.topbar{padding:12px}.logo{font-size:18px}.card,.panel,.stat{padding:12px}.number{font-size:23px}}
+</style>
+</head>
+<body>
+<section id="authScreen" class="auth">
+ <div class="hero">
+  <div class="logo">🛡 CyberShield <span>DRP</span></div>
+  <p style="color:#36d9e7;margin-top:35px">DIGITAL RISK PROTECTION</p>
+  <h1>Protect Your Brand.<br><span>Detect Digital Threats.</span></h1>
+  <p>Monitor suspicious social profiles, fake brand pages, scam accounts and potentially impersonating mobile applications.</p>
+  <div class="features">🔎 Social Media Monitoring<br>📱 Suspicious App Monitoring<br>🚨 Risk Scoring & Threat Management<br>🔗 User URL Management<br>📊 Owner and User Dashboards</div>
+ </div>
+ <div class="auth-side"><div class="card login-card">
+  <div class="logo">🛡 CyberShield <span>DRP</span></div>
+  <p class="small" id="authSubtitle">Owner Portal — Sign in</p>
+  <form id="authForm">
+   <div id="nameField" class="hidden"><label>Full Name</label><input id="fullName" autocomplete="name"></div>
+   <label>Email Address</label><input id="email" type="email" required autocomplete="username" placeholder="Email address">
+   <label>Password</label><input id="password" type="password" required autocomplete="current-password" placeholder="Password">
+   <button class="full" id="submitBtn" type="submit">Login</button>
+  </form>
+  <p style="text-align:center"> <span id="toggleText">Are you a user?</span>
+   <button class="link" id="toggleMode" type="button">User Sign Up / Login</button>
+  </p>
+  <p id="authMessage" class="small"></p>
+  <div class="demo"><b>Owner Login</b><br>owner@cybershield.drp<br>Password: owner@123<br><br><b>Demo User</b><br>user@cybershield.drp<br>Password: User@123</div>
+ </div></div>
+</section>
+
+<section id="appScreen" class="hidden">
+ <header class="topbar"><div class="logo">🛡 CyberShield <span>DRP</span></div>
+  <div><span id="identity" class="small"></span> <span id="roleBadge" class="badge Low"></span> <button id="logout" class="secondary">Logout</button></div>
+ </header>
+ <div class="layout">
+  <aside class="sidebar">
+   <button class="nav active" data-page="dashboard">📊 Dashboard</button>
+   <button class="nav" data-page="threats">🚨 Threat Management</button>
+   <button class="nav" data-page="social">🌐 Social Monitoring</button>
+   <button class="nav" data-page="apps">📱 App Monitoring</button>
+   <button class="nav" data-page="brand">🏢 Brand Profile</button>
+   <button class="nav ownerOnly hidden" data-page="users">👥 User Accounts</button>
+   <button class="nav" data-page="urls">🔗 Manage URLs</button>
+   <button class="nav" data-page="reports">📄 Reports</button>
+  </aside>
+  <main class="main">
+   <div class="notice"><b>Hackathon demo:</b> Scan results are simulated. URL submission does not perform a live security scan.</div>
+
+   <section class="page active" id="page-dashboard">
+    <div class="heading"><div><h1>Security Dashboard</h1><p>Overview of recorded digital risks.</p></div><button id="scanAll">▶ Run Demo Scan</button></div>
+    <div class="stats">
+     <div class="stat"><p>Total Findings</p><div class="number" id="total">0</div></div>
+     <div class="stat"><p>High / Critical</p><div class="number" id="high">0</div></div>
+     <div class="stat"><p>Social Threats</p><div class="number" id="socialCount">0</div></div>
+     <div class="stat"><p>Suspicious Apps</p><div class="number" id="appCount">0</div></div>
+    </div>
+    <div class="grid">
+     <div class="panel"><h2>Recent Findings</h2><div id="recentRows" class="table-wrap"></div></div>
+     <div class="panel"><h2>Risk Distribution</h2><div id="riskChart"></div><h2>Recent Activity</h2><div id="activity"></div></div>
+    </div>
+   </section>
+
+   <section class="page" id="page-threats">
+    <div class="heading"><div><h1>Threat Management</h1><p>Search, filter and resolve findings.</p></div><button id="export">Export CSV</button></div>
+    <div class="panel">
+     <div class="toolbar">
+      <input id="search" placeholder="Search threats">
+      <select id="riskFilter"><option value="">All Risks</option><option>Critical</option><option>High</option><option>Medium</option><option>Low</option></select>
+      <select id="typeFilter"><option value="">All Types</option><option value="social">Social</option><option value="app">Mobile App</option></select>
+      <select id="statusFilter"><option value="">All Statuses</option><option>Open</option><option>Review</option><option>Resolved</option></select>
+     </div>
+     <div id="threatRows" class="table-wrap"></div><p id="resultCount" class="small"></p>
+    </div>
+   </section>
+
+   <section class="page" id="page-social">
+    <div class="heading"><div><h1>Social Monitoring</h1><p>Demo social profile findings.</p></div><button id="scanSocial">Scan Social Demo</button></div>
+    <div class="panel"><div id="socialRows" class="table-wrap"></div></div>
+   </section>
+
+   <section class="page" id="page-apps">
+    <div class="heading"><div><h1>App Monitoring</h1><p>Demo suspicious application findings.</p></div><button id="scanApps">Scan Apps Demo</button></div>
+    <div class="panel"><div id="appRows" class="table-wrap"></div></div>
+   </section>
+
+   <section class="page" id="page-brand">
+    <div class="heading"><div><h1>Brand Profile</h1><p>Set your brand identifiers.</p></div></div>
+    <div class="grid"><div class="panel">
+     <form id="brandForm">
+      <label>Brand Name</label><input id="brandName" required>
+      <label>Official Website</label><input id="website" placeholder="https://example.com">
+      <label>Official Social Accounts</label><textarea id="officialSocial" rows="3"></textarea>
+      <label>Official Apps</label><textarea id="officialApps" rows="3"></textarea>
+      <label>Other Identifiers</label><textarea id="identifiers" rows="3"></textarea>
+      <button>Save Brand Profile</button>
+     </form><p id="brandMessage" class="small"></p>
+    </div><div class="panel"><h2>Brand Preview</h2><div class="card">
+     <div id="brandInitial" style="font-size:30px;color:var(--cyan)">C</div>
+     <h2 id="brandPreview">Acme Technologies</h2><p id="websitePreview" class="small"></p>
+     <p class="small">Social accounts: <b id="socialAssets">0</b></p>
+     <p class="small">Apps: <b id="appAssets">0</b></p>
+     <p class="small">Identifiers: <b id="identifierAssets">0</b></p>
+    </div></div></div>
+   </section>
+
+   <section class="page" id="page-users">
+    <div class="heading"><div><h1>Owner Portal — User Accounts</h1><p>Registered users and submitted URLs.</p></div></div>
+    <div class="panel"><h2>Registered Users</h2><div id="userRows" class="table-wrap"></div></div>
+    <div class="panel"><h2>URLs Submitted by All Users</h2><div id="ownerUrlRows" class="table-wrap"></div></div>
+   </section>
+
+   <section class="page" id="page-urls">
+    <div class="heading"><div><h1>Manage URLs</h1><p>Add a website URL to your account.</p></div></div>
+    <div class="panel"><form id="urlForm">
+     <label>Website Name</label><input id="urlName" required placeholder="My Official Website">
+     <label>Website URL</label><input id="urlValue" type="url" required placeholder="https://example.com">
+     <button type="submit">➕ Add URL</button>
+    </form><p id="urlMessage" class="small"></p></div>
+    <div class="panel"><h2>Saved Website URLs</h2><div id="urlRows" class="table-wrap"></div></div>
+   </section>
+
+   <section class="page" id="page-reports">
+    <div class="heading"><div><h1>Security Reports</h1><p>Export current demo findings.</p></div></div>
+    <div class="stats">
+     <div class="stat"><p>Total Findings</p><div class="number" id="reportTotal">0</div></div>
+     <div class="stat"><p>Unresolved</p><div class="number" id="reportOpen">0</div></div>
+     <div class="stat"><p>Resolved</p><div class="number" id="reportResolved">0</div></div>
+     <div class="stat"><p>Critical</p><div class="number" id="reportCritical">0</div></div>
+    </div>
+    <div class="panel"><h2>Download Report</h2><button id="reportExport">Download Threat Report CSV</button></div>
+   </section>
+   <div class="footer">CyberShield DRP | Hackathon Demo</div>
+  </main>
+ </div>
+</section>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+let token = "", current = null, signup = false, threatsCache = [];
+
+async function api(url, options = {}) {
+  const headers = {...(options.headers || {})};
+  if (token) headers.Authorization = "Bearer " + token;
+  if (options.body) headers["Content-Type"] = "application/json";
+
+  const response = await fetch(url, {...options, headers});
+  if (response.status === 401 && token) {
+    token = "";
+    current = null;
+    $("appScreen").classList.add("hidden");
+    $("authScreen").classList.remove("hidden");
+  }
+
+  if (response.status === 204) return null;
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.includes("application/json")) {
+    if (!response.ok) throw new Error("Request failed.");
+    return response.blob();
+  }
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Request failed.");
+  return data;
+}
+
+function esc(v) {
+  return String(v ?? "").replace(/[&<>"']/g, c =>
+    ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]
+  );
+}
+
+function pill(v) {
+  return '<span class="badge ' + esc(v) + '">' + esc(v) + '</span>';
+}
+
+function table(headers, rows) {
+  return '<table><thead><tr>' + headers.map(h => '<th>' + esc(h) + '</th>').join("") +
+    '</tr></thead><tbody>' + (rows.length ? rows.join("") :
+    '<tr><td colspan="' + headers.length + '">No records found.</td></tr>') +
+    '</tbody></table>';
+}
+
+function typeName(t) {
+  return t.type === "social" ? "Social" : "Mobile App";
+}
+
+function actions(t) {
+  return (t.status !== "Review" ?
+    '<button class="secondary" data-action="Review" data-id="' + esc(t.id) + '">Review</button>' : "") +
+    (t.status !== "Resolved" ?
+    '<button class="green" data-action="Resolved" data-id="' + esc(t.id) + '">Resolve</button>' : "");
+}
+
+function renderThreatTable(list, recent = false) {
+  return table(recent ? ["Finding","Type","Risk","Status"] :
+    ["Finding","Source","Type","Risk","Score","Status","Action"],
+    list.map(t => recent
+      ? '<tr><td>' + esc(t.title) + '</td><td>' + typeName(t) + '</td><td>' + pill(t.risk || riskClient(t.score)) + '</td><td>' + pill(t.status) + '</td></tr>'
+      : '<tr><td><b>' + esc(t.title) + '</b><br><span class="small">' + esc(t.detail) + '</span></td><td>' + esc(t.source) + '</td><td>' + typeName(t) + '</td><td>' + pill(t.risk || riskClient(t.score)) + '</td><td>' + esc(t.score) + '/100</td><td>' + pill(t.status) + '</td><td>' + actions(t) + '</td></tr>'
+    )
+  );
+}
+
+function riskClient(score) {
+  return score >= 90 ? "Critical" : score >= 75 ? "High" : score >= 45 ? "Medium" : "Low";
+}
+
+function setAuthMode() {
+  $("nameField").classList.toggle("hidden", !signup);
+  $("fullName").required = signup;
+  $("authSubtitle").textContent = signup ? "Create a user account" : "Owner Portal — Sign in";
+  $("submitBtn").textContent = signup ? "Create User Account" : "Login";
+  $("toggleText").textContent = signup ? "Already have an account?" : "Are you a user?";
+  $("toggleMode").textContent = signup ? "Back to Login" : "User Sign Up / Login";
+  $("authMessage").textContent = "";
+}
+
+$("toggleMode").onclick = () => { signup = !signup; setAuthMode(); };
+
+$("authForm").onsubmit = async e => {
+  e.preventDefault();
+  $("authMessage").textContent = "";
+  try {
+    const body = signup
+      ? {name:$("fullName").value, email:$("email").value, password:$("password").value}
+      : {email:$("email").value, password:$("password").value};
+
+    const result = await api(signup ? "/api/register" : "/api/login", {
+      method:"POST", body:JSON.stringify(body)
+    });
+
+    token = result.token;
+    current = result.user;
+    $("authScreen").classList.add("hidden");
+    $("appScreen").classList.remove("hidden");
+    $("identity").textContent = current.name + " (" + current.email + ")";
+    $("roleBadge").textContent = current.role.toUpperCase();
+
+    document.querySelectorAll(".ownerOnly").forEach(el =>
+      el.classList.toggle("hidden", current.role !== "owner")
+    );
+
+    signup = false;
+    setAuthMode();
+    await go("dashboard");
+  } catch (error) {
+    $("authMessage").textContent = error.message;
+  }
+};
+
+$("logout").onclick = async () => {
+  try { await api("/api/logout", {method:"POST"}); } catch {}
+  token = "";
+  current = null;
+  $("appScreen").classList.add("hidden");
+  $("authScreen").classList.remove("hidden");
+  $("authForm").reset();
+  signup = false;
+  setAuthMode();
+};
+
+async function go(page) {
+  if (page === "users" && (!current || current.role !== "owner")) {
+    alert("Owner access required.");
+    return;
+  }
+  document.querySelectorAll(".page").forEach(el =>
+    el.classList.toggle("active", el.id === "page-" + page)
+  );
+  document.querySelectorAll(".nav").forEach(el =>
+    el.classList.toggle("active", el.dataset.page === page)
+  );
+  try { await refreshPage(page); }
+  catch (e) { alert(e.message); }
+}
+
+document.querySelectorAll(".nav").forEach(el =>
+  el.onclick = () => go(el.dataset.page)
+);
+
+async function refreshPage(page) {
+  if (page === "dashboard") await dashboard();
+  if (page === "threats") await loadThreats();
+  if (page === "social") await loadCategory("social");
+  if (page === "apps") await loadCategory("app");
+  if (page === "urls") await loadURLs();
+  if (page === "brand") await loadBrand();
+  if (page === "users") await loadUsers();
+  if (page === "reports") await loadReports();
+}
+
+async function dashboard() {
+  const d = await api("/api/dashboard");
+  $("total").textContent = d.stats.total;
+  $("high").textContent = d.stats.high;
+  $("socialCount").textContent = d.stats.social;
+  $("appCount").textContent = d.stats.apps;
+  $("recentRows").innerHTML = renderThreatTable(
+    d.threats.map(t => ({...t, risk:riskClient(t.score)})), true
+  );
+
+  const levels = ["Critical","High","Medium","Low"];
+  const colors = {Critical:"#ff6578",High:"#ffb454",Medium:"#e4d36d",Low:"#43d6a4"};
+  $("riskChart").innerHTML = levels.map(level => {
+    const n = d.threats.filter(t => riskClient(t.score) === level).length;
+    return '<p class="small">' + level + '<b style="float:right">' + n +
+      '</b></p><div class="bar"><div class="fill" style="width:' +
+      (n / Math.max(1, d.stats.total) * 100) + '%;background:' + colors[level] +
+      '"></div></div>';
+  }).join("");
+
+  $("activity").innerHTML = d.activity.map(a =>
+    '<div class="activity">' + esc(a) + '</div>'
+  ).join("");
+}
+
+async function loadThreats() {
+  const params = new URLSearchParams({
+    search:$("search").value,
+    risk:$("riskFilter").value,
+    type:$("typeFilter").value,
+    status:$("statusFilter").value
+  });
+  const list = await api("/api/threats?" + params);
+  threatsCache = list;
+  $("threatRows").innerHTML = renderThreatTable(list);
+  $("resultCount").textContent = "Showing " + list.length + " findings.";
+}
+
+async function loadCategory(type) {
+  const list = await api("/api/threats?type=" + type);
+  const id = type === "social" ? "socialRows" : "appRows";
+  $(id).innerHTML = renderThreatTable(list);
+}
+
+["search","riskFilter","typeFilter","statusFilter"].forEach(id =>
+  $(id).addEventListener(id === "search" ? "input" : "change", () =>
+    loadThreats().catch(e => alert(e.message))
+  )
+);
+
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-action]");
+  if (b && current) {
+    try {
+      await api("/api/threats/" + encodeURIComponent(b.dataset.id), {
+        method:"PATCH",
+        body:JSON.stringify({status:b.dataset.action})
+      });
+      await loadThreats();
+      await dashboard();
+      await loadCategory("social");
+      await loadCategory("app");
+    } catch (err) { alert(err.message); }
+  }
+
+  const del = e.target.closest("[data-delete-url]");
+  if (del && current && confirm("Delete this URL?")) {
+    try {
+      await api("/api/urls/" + encodeURIComponent(del.dataset.deleteUrl), {method:"DELETE"});
+      await loadURLs();
+      if (current.role === "owner") await loadUsers();
+    } catch (err) { alert(err.message); }
+  }
+});
+
+async function scan(type) {
+  try {
+    const result = await api("/api/scan/" + type, {method:"POST"});
+    alert(result.message + " Added: " + result.added);
+    await dashboard();
+    await loadThreats();
+    await loadCategory("social");
+    await loadCategory("app");
+    await loadReports();
+  } catch (e) { alert(e.message); }
+}
+$("scanAll").onclick = () => scan("all");
+$("scanSocial").onclick = () => scan("social");
+$("scanApps").onclick = () => scan("app");
+
+$("urlForm").onsubmit = async e => {
+  e.preventDefault();
+  try {
+    await api("/api/urls", {
+      method:"POST",
+      body:JSON.stringify({name:$("urlName").value, url:$("urlValue").value})
+    });
+    $("urlForm").reset();
+    $("urlMessage").textContent = "URL added successfully.";
+    await loadURLs();
+    if (current.role === "owner") await loadUsers();
+  } catch (err) {
+    $("urlMessage").textContent = err.message;
+  }
+};
+
+async function loadURLs() {
+  const list = await api("/api/urls");
+  $("urlRows").innerHTML = table(["Website Name","URL","Added By","Action"],
+    list.map(u => '<tr><td>' + esc(u.name) + '</td><td><a target="_blank" rel="noopener noreferrer" href="' +
+      esc(u.url) + '">' + esc(u.url) + '</a></td><td>' + esc(u.addedBy) +
+      '</td><td><button class="secondary" data-delete-url="' + esc(u.id) + '">Delete</button></td></tr>')
+  );
+}
+
+async function loadUsers() {
+  if (current.role !== "owner") return;
+  const users = await api("/api/users");
+  $("userRows").innerHTML = table(["Name","Email","Role"],
+    users.map(u => '<tr><td>' + esc(u.name) + '</td><td>' +
+      esc(u.email) + '</td><td>' + esc(u.role.toUpperCase()) + '</td></tr>')
+  );
+
+  const urls = await api("/api/owner/urls");
+  $("ownerUrlRows").innerHTML = table(["Name","URL","Added By"],
+    urls.map(u => '<tr><td>' + esc(u.name) + '</td><td><a target="_blank" rel="noopener noreferrer" href="' +
+      esc(u.url) + '">' + esc(u.url) + '</a></td><td>' + esc(u.addedBy) + '</td></tr>')
+  );
+}
+
+async function loadBrand() {
+  const b = await api("/api/brand");
+  $("brandName").value = b.name || "";
+  $("website").value = b.website || "";
+  $("officialSocial").value = b.social || "";
+  $("officialApps").value = b.apps || "";
+  $("identifiers").value = b.identifiers || "";
+  renderBrandPreview(b);
+  const isOwner = current.role === "owner";
+  $("brandForm").querySelectorAll("input,textarea,button").forEach(el => el.disabled = !isOwner);
+  $("brandMessage").textContent = isOwner ? "Owner can edit the brand profile." : "Read-only: only the owner can edit the brand profile.";
+}
+
+function renderBrandPreview(b) {
+  $("brandPreview").textContent = b.name || "Your Brand";
+  $("brandInitial").textContent = (b.name || "C").charAt(0).toUpperCase();
+  $("websitePreview").textContent = b.website || "Official website not set";
+  $("socialAssets").textContent = (b.social || "").split("\n").filter(x => x.trim()).length;
+  $("appAssets").textContent = (b.apps || "").split("\n").filter(x => x.trim()).length;
+  $("identifierAssets").textContent = (b.identifiers || "").split(",").filter(x => x.trim()).length;
+}
+
+$("brandForm").onsubmit = async e => {
+  e.preventDefault();
+  try {
+    const b = await api("/api/brand", {
+      method:"PUT",
+      body:JSON.stringify({
+        name:$("brandName").value,
+        website:$("website").value,
+        social:$("officialSocial").value,
+        apps:$("officialApps").value,
+        identifiers:$("identifiers").value
+      })
+    });
+    renderBrandPreview(b);
+    $("brandMessage").textContent = "Brand profile saved on the server.";
+  } catch (err) { $("brandMessage").textContent = err.message; }
+};
+
+async function loadReports() {
+  const d = await api("/api/dashboard");
+  const list = await api("/api/threats");
+  $("reportTotal").textContent = list.length;
+  $("reportOpen").textContent = list.filter(t => t.status !== "Resolved").length;
+  $("reportResolved").textContent = list.filter(t => t.status === "Resolved").length;
+  $("reportCritical").textContent = list.filter(t => t.risk === "Critical").length;
+}
+
+async function exportCSV() {
+  try {
+    const blob = await api("/api/report.csv");
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "cybershield-threat-report.csv";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch (e) { alert(e.message); }
+}
+$("export").onclick = exportCSV;
+$("reportExport").onclick = exportCSV;
+
+setAuthMode();
+</script>
+</body>
+</html>`);
+});
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("CyberShield DRP running at http://localhost:" + PORT);
+  console.log("Owner: owner@cybershield.drp");
+});

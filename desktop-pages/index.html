@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberShield | Digital Risk Protection</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #08111f;
+    --panel: #111d31;
+    --panel2: #16243a;
+    --border: #293c59;
+    --blue: #397cff;
+    --cyan: #36d9e7;
+    --text: #edf4ff;
+    --muted: #9aacc5;
+    --green: #31d6a0;
+    --red: #ff657c;
+    --yellow: #ffc857;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+button, input, select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* LOGIN AND SIGNUP */
+
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background:
+        radial-gradient(circle at top left, #16315b, transparent 40%),
+        radial-gradient(circle at bottom right, #073d4c, transparent 35%),
+        var(--bg);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 430px;
+    padding: 35px;
+    background: rgba(17, 29, 49, 0.97);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: 0 20px 70px #0006;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.logo span {
+    color: var(--cyan);
+}
+
+.auth-subtitle {
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.auth-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 25px;
+}
+
+.auth-tabs button {
+    flex: 1;
+    padding: 12px;
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 9px;
+}
+
+.auth-tabs button.active {
+    background: var(--blue);
+    color: white;
+    border-color: var(--blue);
+}
+
+.field {
+    margin-bottom: 17px;
+}
+
+.field label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: #d4e0f4;
+}
+
+.field input,
+.field select {
+    width: 100%;
+    padding: 13px;
+    background: #0b1729;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    color: white;
+    outline: none;
+}
+
+.field input:focus,
+.field select:focus {
+    border-color: var(--cyan);
+}
+
+.primary-btn {
+    width: 100%;
+    border: none;
+    border-radius: 9px;
+    padding: 14px;
+    color: white;
+    font-weight: bold;
+    background: linear-gradient(100deg, var(--blue), #6257ef);
+    margin-top: 5px;
+}
+
+.primary-btn:hover {
+    opacity: 0.9;
+}
+
+.message {
+    margin-top: 15px;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.demo-note {
+    margin-top: 22px;
+    padding: 12px;
+    background: #0b1729;
+    border-radius: 9px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+/* APPLICATION LAYOUT */
+
+.app {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 245px minmax(0, 1fr);
+}
+
+.sidebar {
+    background: #0b1627;
+    border-right: 1px solid var(--border);
+    padding: 25px 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar .logo {
+    padding: 0 10px 30px;
+}
+
+.nav-label {
+    color: #7488a4;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    padding: 10px;
+}
+
+.nav-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 13px;
+    margin-bottom: 5px;
+    border: none;
+    border-radius: 9px;
+    color: var(--muted);
+    background: transparent;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+    background: #1b3150;
+    color: white;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding-top: 25px;
+}
+
+.user-mini {
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow-wrap: anywhere;
+}
+
+.user-mini small {
+    display: block;
+    margin-top: 5px;
+    color: var(--muted);
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 12px;
+    background: #281c2b;
+    color: var(--red);
+    border: 1px solid #513044;
+    border-radius: 9px;
+}
+
+.main {
+    min-width: 0;
+}
+
+.topbar {
+    padding: 22px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    border-bottom: 1px solid var(--border);
+    background: #0c1728;
+}
+
+.topbar h2 {
+    font-size: 21px;
+}
+
+.topbar p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.status-pill {
+    background: #10382f;
+    color: var(--green);
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.content {
+    padding: 28px;
+    max-width: 1500px;
+    margin: auto;
+}
+
+.welcome {
+    margin-bottom: 25px;
+}
+
+.welcome h1 {
+    font-size: 27px;
+    margin-bottom: 9px;
+}
+
+.welcome p {
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+/* CARDS */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 17px;
+    margin-bottom: 25px;
+}
+
+.stat-card,
+.card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+}
+
+.stat-card {
+    padding: 20px;
+}
+
+.stat-title {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 17px;
+}
+
+.stat-number {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 9px;
+}
+
+.stat-description {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.card {
+    padding: 22px;
+    margin-bottom: 22px;
+    min-width: 0;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.card-header h3 {
+    font-size: 17px;
+}
+
+.badge {
+    font-size: 11px;
+    padding: 6px 9px;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.badge-red {
+    color: var(--red);
+    background: #40202c;
+}
+
+.badge-yellow {
+    color: var(--yellow);
+    background: #40341c;
+}
+
+.badge-green {
+    color: var(--green);
+    background: #10382f;
+}
+
+/* DASHBOARD */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 22px;
+}
+
+.scan-form {
+    display: flex;
+    gap: 10px;
+}
+
+.scan-form input {
+    min-width: 0;
+    flex: 1;
+    padding: 12px;
+    background: #0b1729;
+    border: 1px solid var(--border);
+    color: white;
+    border-radius: 8px;
+}
+
+.action-btn {
+    border: none;
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: white;
+    background: var(--blue);
+}
+
+.secondary-btn {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    color: white;
+    padding: 10px 13px;
+    border-radius: 8px;
+}
+
+.help-text {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+    margin-top: 12px;
+}
+
+.activity {
+    display: flex;
+    gap: 12px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.activity:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    background: #203657;
+}
+
+.activity p {
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.activity small {
+    display: block;
+    margin-top: 5px;
+    color: var(--muted);
+}
+
+.progress {
+    height: 7px;
+    border-radius: 10px;
+    background: #26364c;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.progress div {
+    height: 100%;
+    background: var(--cyan);
+    border-radius: 10px;
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+/* TABLE */
+
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 650px;
+    text-align: left;
+}
+
+th {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: normal;
+}
+
+th, td {
+    padding: 15px 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+td {
+    font-size: 13px;
+}
+
+td a {
+    color: var(--cyan);
+    overflow-wrap: anywhere;
+}
+
+.table-actions {
+    display: flex;
+    gap: 7px;
+}
+
+.small-btn {
+    padding: 7px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--panel2);
+    color: white;
+}
+
+.danger-btn {
+    color: var(--red);
+}
+
+.empty {
+    text-align: center;
+    padding: 30px;
+    color: var(--muted);
+}
+
+/* BRAND MANAGEMENT */
+
+.brand-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.brand-form .field {
+    margin-bottom: 0;
+}
+
+.brand-form .full {
+    grid-column: 1 / -1;
+}
+
+.brand-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.brand-item {
+    padding: 18px;
+    border: 1px solid var(--border);
+    background: #0d192b;
+    border-radius: 10px;
+    overflow-wrap: anywhere;
+}
+
+.brand-item h4 {
+    margin-bottom: 10px;
+}
+
+.brand-item p {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+footer {
+    color: #7488a4;
+    font-size: 11px;
+    padding: 10px 0 25px;
+    text-align: center;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+    .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .app {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        padding: 15px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar .logo {
+        padding-bottom: 15px;
+    }
+
+    .nav-label {
+        display: none;
+    }
+
+    .sidebar nav {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 5px;
+    }
+
+    .nav-btn {
+        margin: 0;
+        font-size: 12px;
+        padding: 11px 8px;
+    }
+
+    .sidebar-bottom {
+        margin-top: 15px;
+        padding-top: 10px;
+    }
+
+    .topbar {
+        padding: 18px;
+    }
+
+    .content {
+        padding: 16px;
+    }
+
+    .stats {
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 15px;
+    }
+
+    .stat-number {
+        font-size: 24px;
+    }
+
+    .card {
+        padding: 16px;
+    }
+
+    .scan-form {
+        flex-direction: column;
+    }
+
+    .brand-form,
+    .brand-list {
+        grid-template-columns: 1fr;
+    }
+
+    .brand-form .full {
+        grid-column: auto;
+    }
+
+    .auth-card {
+        padding: 25px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN / SIGNUP PAGE -->
+
+<div id="authPage" class="auth-page">
+    <div class="auth-card">
+
+        <div class="logo">🛡️ Cyber<span>Shield</span></div>
+
+        <p class="auth-subtitle">
+            Digital Risk Protection Platform<br>
+            Monitor brand impersonation and suspicious digital activity.
+        </p>
+
+        <div class="auth-tabs">
+            <button id="loginTab" class="active" onclick="showAuth('login')">
+                Sign In
+            </button>
+
+            <button id="signupTab" onclick="showAuth('signup')">
+                Sign Up
+            </button>
+        </div>
+
+        <form id="authForm">
+            <div id="nameField" class="field hidden">
+                <label>Full Name</label>
+                <input id="fullName" type="text" placeholder="Enter your name">
+            </div>
+
+            <div class="field">
+                <label>Email Address</label>
+                <input
+                    id="email"
+                    type="email"
+                    placeholder="student@example.com"
+                    required
+                    autocomplete="email">
+            </div>
+
+            <div class="field">
+                <label>Password</label>
+                <input
+                    id="password"
+                    type="password"
+                    placeholder="Enter password"
+                    required
+                    minlength="8"
+                    autocomplete="current-password">
+            </div>
+
+            <button id="authSubmit" type="submit" class="primary-btn">
+                Sign In Securely
+            </button>
+
+            <p id="authMessage" class="message" role="status"></p>
+        </form>
+
+        <div class="demo-note">
+            <strong>College Project Demo</strong><br>
+            Create an account using Sign Up, then sign in.<br>
+            This demonstration stores account data in your browser.
+            Do not use a real or reused password.
+        </div>
+    </div>
+</div>
+
+
+<!-- MAIN APPLICATION -->
+
+<div id="app" class="app hidden">
+
+    <aside class="sidebar">
+
+        <div class="logo">🛡️ Cyber<span>Shield</span></div>
+
+        <div class="nav-label">WORKSPACE</div>
+
+        <nav>
+            <button class="nav-btn active" onclick="navigate('dashboard', this)">
+                ▦ Dashboard
+            </button>
+
+            <button class="nav-btn" onclick="navigate('profiles', this)">
+                ◎ Social Profiles
+            </button>
+
+            <button class="nav-btn" onclick="navigate('apps', this)">
+                ▣ Mobile Apps
+            </button>
+
+            <button class="nav-btn" onclick="navigate('brands', this)">
+                ◈ Brand Management
+            </button>
+
+            <button class="nav-btn" onclick="navigate('reports', this)">
+                ▤ Reports
+            </button>
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="user-mini">
+                <strong id="sidebarName">User</strong>
+                <small id="sidebarEmail">user@example.com</small>
+            </div>
+
+            <button class="logout-btn" onclick="logout()">
+                ↪ Logout
+            </button>
+
+        </div>
+    </aside>
+
+
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h2 id="pageTitle">Security Dashboard</h2>
+                <p>Digital Risk Protection & Threat Monitoring</p>
+            </div>
+
+            <div class="status-pill">● Demo System Online</div>
+        </header>
+
+
+        <div class="content">
+
+            <!-- DASHBOARD SECTION -->
+
+            <section id="dashboard" class="section active">
+
+                <div class="welcome">
+                    <h1>Welcome, <span id="welcomeName">User</span> 👋</h1>
+
+                    <p>
+                        Monitor potential brand impersonation, suspicious social
+                        profiles, and mobile applications from one dashboard.
+                    </p>
+                </div>
+
+                <div class="stats">
+
+                    <div class="stat-card">
+                        <div class="stat-title">Monitored Brands</div>
+                        <div class="stat-number" id="brandCount">0</div>
+                        <div class="stat-description">Brands in your workspace</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-title">Social Profiles</div>
+                        <div class="stat-number" id="profileCount">0</div>
+                        <div class="stat-description">Demo profiles analyzed</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-title">Suspicious Profiles</div>
+                        <div class="stat-number" id="riskCount">0</div>
+                        <div class="stat-description">Potential risks in demo data</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-title">Suspicious Apps</div>
+                        <div class="stat-number" id="appRiskCount">0</div>
+                        <div class="stat-description">Sample app findings</div>
+                    </div>
+
+                </div>
+
+
+                <div class="dashboard-grid">
+
+                    <div class="card">
+
+                        <div class="card-header">
+                            <h3>🔎 Threat Scan</h3>
+                            <span class="badge badge-green">Ready</span>
+                        </div>
+
+                        <form id="scanForm">
+
+                            <div class="field">
+                                <label>Brand or Company Name</label>
+
+                                <input
+                                    id="scanBrand"
+                                    type="text"
+                                    placeholder="Example: ExampleBank"
+                                    required>
+                            </div>
+
+                            <div class="field">
+                                <label>Monitoring Category</label>
+
+                                <select id="scanType">
+                                    <option value="all">All Threat Categories</option>
+                                    <option value="social">Social Media Profiles</option>
+                                    <option value="apps">Mobile Applications</option>
+                                </select>
+                            </div>
+
+                            <button class="primary-btn" type="submit">
+                                ▶ Run Demo Scan
+                            </button>
+
+                        </form>
+
+                        <p class="help-text">
+                            This scan searches built-in sample records. It does not
+                            connect to live social media platforms or app stores.
+                        </p>
+
+                        <div id="scanMessage" class="message" role="status"></div>
+
+                    </div>
+
+
+                    <div class="card">
+
+                        <div class="card-header">
+                            <h3>Recent Activity</h3>
+                            <span class="badge badge-green">Local</span>
+                        </div>
+
+                        <div id="activityList">
+                            <div class="activity">
+                                <div class="activity-icon">🛡️</div>
+                                <div>
+                                    <p>CyberShield workspace initialized.</p>
+                                    <small>Ready to monitor demo records</small>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h3>Potential Threat Overview</h3>
+                        <button class="secondary-btn" onclick="navigate('profiles')">
+                            View Profiles
+                        </button>
+                    </div>
+
+                    <div id="overviewList"></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- SOCIAL PROFILE SECTION -->
+
+            <section id="profiles" class="section">
+
+                <div class="welcome">
+                    <h1>Social Profile Monitoring</h1>
+                    <p>
+                        Review sample social profiles that may impersonate brands.
+                    </p>
+                </div>
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h3>Profile Detection Results</h3>
+
+                        <button class="secondary-btn" onclick="exportProfiles()">
+                            Export CSV
+                        </button>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Profile</th>
+                                    <th>Platform</th>
+                                    <th>Risk</th>
+                                    <th>Reason</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="profileTable"></tbody>
+                        </table>
+                    </div>
+
+                    <p class="help-text">
+                        These are fictional demonstration records. A risk label is
+                        not proof that an account is fraudulent.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- MOBILE APP SECTION -->
+
+            <section id="apps" class="section">
+
+                <div class="welcome">
+                    <h1>Mobile App Monitoring</h1>
+                    <p>
+                        Review sample mobile applications for potential brand
+                        impersonation.
+                    </p>
+                </div>
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h3>Application Risk Analysis</h3>
+
+                        <button class="secondary-btn" onclick="exportApps()">
+                            Export CSV
+                        </button>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Application</th>
+                                    <th>Platform</th>
+                                    <th>Risk</th>
+                                    <th>Reason</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="appTable"></tbody>
+                        </table>
+                    </div>
+
+                    <p class="help-text">
+                        The app records are simulated. This website does not
+                        download, install, or scan actual mobile applications.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- BRAND MANAGEMENT SECTION -->
+
+            <section id="brands" class="section">
+
+                <div class="welcome">
+                    <h1>Brand Management</h1>
+                    <p>
+                        Add brands to your local monitoring workspace.
+                    </p>
+                </div>
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h3>Add a Brand</h3>
+                    </div>
+
+                    <form id="brandForm" class="brand-form">
+
+                        <div class="field">
+                            <label>Brand Name</label>
+                            <input
+                                id="brandName"
+                                type="text"
+                                placeholder="Enter brand name"
+                                required>
+                        </div>
+
+                        <div class="field">
+                            <label>Official Website</label>
+                            <input
+                                id="brandWebsite"
+                                type="url"
+                                placeholder="https://example.com">
+                        </div>
+
+                        <div class="field full">
+                            <label>Official Social Profile (Optional)</label>
+                            <input
+                                id="brandSocial"
+                                type="url"
+                                placeholder="https://social.example/yourbrand">
+                        </div>
+
+                        <div class="full">
+                            <button type="submit" class="primary-btn">
+                                + Add Brand
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h3>Your Monitored Brands</h3>
+                    </div>
+
+                    <div id="brandList" class="brand-list"></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- REPORTS SECTION -->
+
+            <section id="reports" class="section">
+
+                <div class="welcome">
+                    <h1>Security Reports</h1>
+                    <p>
+                        Generate a local CSV report of the demonstration findings.
+                    </p>
+                </div>
+
+                <div class="card">
+
+                    <h3>Report Summary</h3>
+
+                    <div class="stats" style="margin-top:20px">
+
+                        <div class="stat-card">
+                            <div class="stat-title">Profile Records</div>
+                            <div class="stat-number" id="reportProfiles">0</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-title">Application Records</div>
+                            <div class="stat-number" id="reportApps">0</div>
+                        </div>
+
+                    </div>
+
+                    <button class="action-btn" onclick="exportFullReport()">
+                        Download Full CSV Report
+                    </button>
+
+                    <p class="help-text">
+                        Reports contain the locally stored demonstration data.
+                    </p>
+
+                </div>
+
+            </section>
+
+            <footer>
+                CyberShield DRP · College Project Demonstration · HTML, CSS & JavaScript
+            </footer>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+/*
+ * CYBERSHIELD COLLEGE PROJECT
+ *
+ * This frontend demo uses localStorage.
+ * It is not a production authentication or threat-intelligence system.
+ */
+
+const DB = {
+    users: "cybershield_demo_users",
+    session: "cybershield_demo_session",
+    brands: "cybershield_demo_brands",
+    reviewed: "cybershield_demo_reviewed",
+    activities: "cybershield_demo_activities"
+};
+
+let authMode = "login";
+
+const sampleProfiles = [
+    {
+        brand: "ExampleBank",
+        profile: "@examplebank_support",
+        platform: "Instagram",
+        risk: "High",
+        reason: "Unverified support-style username"
+    },
+    {
+        brand: "ExampleBank",
+        profile: "@examplebank_official_help",
+        platform: "Facebook",
+        risk: "Medium",
+        reason: "Official identity requires verification"
+    },
+    {
+        brand: "ShopExample",
+        profile: "@shop-example-gifts",
+        platform: "Instagram",
+        risk: "High",
+        reason: "Suspicious promotional identity"
+    },
+    {
+        brand: "TechExample",
+        profile: "@techexample_news",
+        platform: "X",
+        risk: "Low",
+        reason: "No decisive impersonation evidence in sample"
+    },
+    {
+        brand: "ExampleBank",
+        profile: "@examplebank_alert",
+        platform: "X",
+        risk: "Medium",
+        reason: "Brand-related alert account requires review"
+    }
+];
+
+const sampleApps = [
+    {
+        brand: "ExampleBank",
+        name: "ExampleBank Rewards Plus",
+        platform: "Android",
+        risk: "High",
+        reason: "Unverified publisher in sample data"
+    },
+    {
+        brand: "ShopExample",
+        name: "ShopExample Bonus",
+        platform: "Android",
+        risk: "Medium",
+        reason: "Brand-like app name"
+    },
+    {
+        brand: "TechExample",
+        name: "TechExample Official",
+        platform: "iOS",
+        risk: "Low",
+        reason: "Publisher identity requires verification"
+    },
+    {
+        brand: "ExampleBank",
+        name: "ExampleBank Secure Update",
+        platform: "Android",
+        risk: "High",
+        reason: "Potentially misleading application name"
+    }
+];
+
+function readData(key, fallback) {
+    try {
+        const value = localStorage.getItem(key);
+        return value === null ? fallback : JSON.parse(value);
+    } catch (error) {
+        return fallback;
+    }
+}
+
+function saveData(key, value) {
+    try {
+        localStorage.setItem(key, JSON.stringify(value));
+        return true;
+    } catch (error) {
+        alert("Browser storage is unavailable or full.");
+        return false;
+    }
+}
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, function(char) {
+        return {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[char];
+    });
+}
+
+function showAuth(mode) {
+    authMode = mode;
+
+    document.getElementById("authMessage").textContent = "";
+
+    document.getElementById("loginTab")
+        .classList.toggle("active", mode === "login");
+
+    document.getElementById("signupTab")
+        .classList.toggle("active", mode === "signup");
+
+    document.getElementById("nameField")
+        .classList.toggle("hidden", mode !== "signup");
+
+    document.getElementById("authSubmit").textContent =
+        mode === "login" ? "Sign In Securely" : "Create Account";
+
+    document.getElementById("fullName").required = mode === "signup";
+
+    document.getElementById("password").autocomplete =
+        mode === "signup" ? "new-password" : "current-password";
+}
+
+document.getElementById("authForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("fullName").value.trim();
+    const email = document.getElementById("email").value.trim().toLowerCase();
+    const password = document.getElementById("password").value;
+    const message = document.getElementById("authMessage");
+
+    if (password.length < 8) {
+        message.style.color = "var(--red)";
+        message.textContent = "Password must contain at least 8 characters.";
+        return;
+    }
+
+    const users = readData(DB.users, []);
+
+    if (authMode === "signup") {
+        if (name.length < 2) {
+            message.style.color = "var(--red)";
+            message.textContent = "Please enter your full name.";
+            return;
+        }
+
+        if (users.some(user => user.email === email)) {
+            message.style.color = "var(--red)";
+            message.textContent = "This email already has a demo account. Please sign in.";
+            return;
+        }
+
+        /*
+         * DEMO ONLY:
+         * Plain-text passwords in browser storage are NOT secure.
+         * Never use this authentication approach in production.
+         */
+        users.push({
+            name: name,
+            email: email,
+            password: password
+        });
+
+        if (!saveData(DB.users, users)) return;
+
+        message.style.color = "var(--green)";
+        message.textContent = "Account created. You can now sign in.";
+
+        document.getElementById("password").value = "";
+        showAuth("login");
+        document.getElementById("email").value = email;
+
+        document.getElementById("authMessage").textContent =
+            "Account created successfully. Please sign in.";
+
+        document.getElementById("authMessage").style.color = "var(--green)";
+
+    } else {
+        const user = users.find(
+            item => item.email === email && item.password === password
+        );
+
+        if (!user) {
+            message.style.color = "var(--red)";
+            message.textContent = "Invalid email or password. Check your details or sign up.";
+            return;
+        }
+
+        saveData(DB.session, {
+            name: user.name,
+            email: user.email
+        });
+
+        openApp();
+    }
+});
+
+function openApp() {
+    const session = readData(DB.session, null);
+
+    if (!session) return;
+
+    document.getElementById("authPage").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+
+    document.getElementById("welcomeName").textContent = session.name;
+    document.getElementById("sidebarName").textContent = session.name;
+    document.getElementById("sidebarEmail").textContent = session.email;
+
+    initializeWorkspace();
+}
+
+function logout() {
+    localStorage.removeItem(DB.session);
+
+    document.getElementById("app").classList.add("hidden");
+    document.getElementById("authPage").classList.remove("hidden");
+
+    document.getElementById("password").value = "";
+    document.getElementById("authMessage").textContent = "";
+
+    showAuth("login");
+}
+
+function navigate(sectionId, button) {
+    document.querySelectorAll(".section").forEach(section => {
+        section.classList.remove("active");
+    });
+
+    document.getElementById(sectionId).classList.add("active");
+
+    document.querySelectorAll(".nav-btn").forEach(nav => {
+        nav.classList.remove("active");
+    });
+
+    if (button) button.classList.add("active");
+
+    const titles = {
+        dashboard: "Security Dashboard",
+        profiles: "Social Profile Monitoring",
+        apps: "Mobile App Monitoring",
+        brands: "Brand Management",
+        reports: "Security Reports"
+    };
+
+    document.getElementById("pageTitle").textContent = titles[sectionId];
+
+    refreshWorkspace();
+}
+
+function getBrands() {
+    return readData(DB.brands, []);
+}
+
+function getReviewed() {
+    return readData(DB.reviewed, []);
+}
+
+function getActivities() {
+    return readData(DB.activities, []);
+}
+
+function addActivity(text) {
+    const activities = getActivities();
+
+    activities.unshift({
+        text: text,
+        time: new Date().toLocaleString()
+    });
+
+    saveData(DB.activities, activities.slice(0, 12));
+    renderActivities();
+}
+
+function getProfiles() {
+    const reviewed = getReviewed();
+
+    return sampleProfiles.map((profile, index) => ({
+        ...profile,
+        id: "profile-" + index,
+        reviewed: reviewed.includes("profile-" + index)
+    }));
+}
+
+function getApps() {
+    const reviewed = getReviewed();
+
+    return sampleApps.map((app, index) => ({
+        ...app,
+        id: "app-" + index,
+        reviewed: reviewed.includes("app-" + index)
+    }));
+}
+
+function riskBadge(risk, reviewed) {
+    if (reviewed) {
+        return '<span class="badge badge-green">Reviewed</span>';
+    }
+
+    const css = risk === "High" ? "badge-red" :
+                risk === "Medium" ? "badge-yellow" : "badge-green";
+
+    return '<span class="badge ' + css + '">' +
+        escapeHTML(risk) + ' Risk</span>';
+}
+
+function renderProfiles() {
+    const tbody = document.getElementById("profileTable");
+    const profiles = getProfiles();
+
+    tbody.innerHTML = profiles.map(profile => `
+        <tr>
+            <td>
+                <strong>${escapeHTML(profile.profile)}</strong>
+                <br>
+                <small style="color:var(--muted)">
+                    ${escapeHTML(profile.brand)}
+                </small>
+            </td>
+            <td>${escapeHTML(profile.platform)}</td>
+            <td>${riskBadge(profile.risk, profile.reviewed)}</td>
+            <td>${escapeHTML(profile.reason)}</td>
+            <td>
+                <button
+                    class="small-btn"
+                    onclick="reviewItem('${profile.id}')">
+                    ${profile.reviewed ? "Reviewed" : "Mark Reviewed"}
+                </button>
+            </td>
+        </tr>
+    `).join("");
+}
+
+function renderApps() {
+    const tbody = document.getElementById("appTable");
+    const apps = getApps();
+
+    tbody.innerHTML = apps.map(app => `
+        <tr>
+            <td>
+                <strong>${escapeHTML(app.name)}</strong>
+                <br>
+                <small style="color:var(--muted)">
+                    ${escapeHTML(app.brand)}
+                </small>
+            </td>
+            <td>${escapeHTML(app.platform)}</td>
+            <td>${riskBadge(app.risk, app.reviewed)}</td>
+            <td>${escapeHTML(app.reason)}</td>
+            <td>
+                <button
+                    class="small-btn"
+                    onclick="reviewItem('${app.id}')">
+                    ${app.reviewed ? "Reviewed" : "Mark Reviewed"}
+                </button>
+            </td>
+        </tr>
+    `).join("");
+}
+
+function reviewItem(id) {
+    const reviewed = getReviewed();
+
+    if (!reviewed.includes(id)) {
+        reviewed.push(id);
+        saveData(DB.reviewed, reviewed);
+        addActivity("Marked " + id + " as reviewed.");
+    }
+
+    refreshWorkspace();
+}
+
+function renderBrands() {
+    const container = document.getElementById("brandList");
+    const brands = getBrands();
+
+    if (!brands.length) {
+        container.innerHTML =
+            '<div class="empty">No brands added yet. Add your first brand above.</div>';
+        return;
+    }
+
+    container.innerHTML = brands.map((brand, index) => `
+        <div class="brand-item">
+            <h4>◈ ${escapeHTML(brand.name)}</h4>
+            <p>
+                Official website:
+                ${brand.website
+                    ? '<a href="' + escapeHTML(brand.website) +
+                      '" target="_blank" rel="noopener noreferrer">' +
+                      escapeHTML(brand.website) + '</a>'
+                    : "Not provided"}
+            </p>
+            <p>
+                Social profile:
+                ${brand.social
+                    ? '<a href="' + escapeHTML(brand.social) +
+                      '" target="_blank" rel="noopener noreferrer">' +
+                      escapeHTML(brand.social) + '</a>'
+                    : "Not provided"}
+            </p>
+            <br>
+            <button class="small-btn danger-btn"
+                onclick="deleteBrand(${index})">
+                Remove Brand
+            </button>
+        </div>
+    `).join("");
+}
+
+document.getElementById("brandForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("brandName").value.trim();
+    const website = document.getElementById("brandWebsite").value.trim();
+    const social = document.getElementById("brandSocial").value.trim();
+
+    if (!name) return;
+
+    const brands = getBrands();
+
+    if (brands.some(brand => brand.name.toLowerCase() === name.toLowerCase())) {
+        alert("This brand already exists.");
+        return;
+    }
+
+    brands.push({
+        name: name,
+        website: website,
+        social: social
+    });
+
+    if (!saveData(DB.brands, brands)) return;
+
+    this.reset();
+
+    addActivity("Added brand: " + name);
+    refreshWorkspace();
+
+    alert("Brand added successfully!");
+});
+
+function deleteBrand(index) {
+    const brands = getBrands();
+
+    if (!brands[index]) return;
+
+    if (!confirm("Remove " + brands[index].name + " from your workspace?")) {
+        return;
+    }
+
+    const removed = brands.splice(index, 1)[0];
+
+    saveData(DB.brands, brands);
+
+    addActivity("Removed brand: " + removed.name);
+    refreshWorkspace();
+}
+
+function renderActivities() {
+    const container = document.getElementById("activityList");
+    const activities = getActivities();
+
+    if (!activities.length) {
+        container.innerHTML =
+            '<div class="empty">No recent activity.</div>';
+        return;
+    }
+
+    container.innerHTML = activities.slice(0, 6).map(item => `
+        <div class="activity">
+            <div class="activity-icon">◉</div>
+            <div>
+                <p>${escapeHTML(item.text)}</p>
+                <small>${escapeHTML(item.time)}</small>
+            </div>
+        </div>
+    `).join("");
+}
+
+function renderOverview() {
+    const container = document.getElementById("overviewList");
+    const profiles = getProfiles();
+    const apps = getApps();
+
+    const items = [
+        ...profiles.map(item => ({...item, category: "Social Profile"})),
+        ...apps.map(item => ({
+            ...item,
+            profile: item.name,
+            category: "Mobile App"
+        }))
+    ].filter(item => !item.reviewed && item.risk !== "Low")
+     .slice(0, 5);
+
+    if (!items.length) {
+        container.innerHTML =
+            '<div class="empty">No unreviewed high or medium risk sample records.</div>';
+        return;
+    }
+
+    container.innerHTML = items.map(item => `
+        <div class="activity">
+            <div class="activity-icon">⚠️</div>
+            <div style="flex:1">
+                <p>
+                    <strong>${escapeHTML(item.profile)}</strong>
+                    — ${escapeHTML(item.category)}
+                </p>
+                <small>
+                    ${escapeHTML(item.brand)} · ${escapeHTML(item.reason)}
+                </small>
+                <div style="margin-top:8px">
+                    ${riskBadge(item.risk, false)}
+                </div>
+            </div>
+        </div>
+    `).join("");
+}
+
+function refreshWorkspace() {
+    const profiles = getProfiles();
+    const apps = getApps();
+    const brands = getBrands();
+
+    document.getElementById("brandCount").textContent = brands.length;
+    document.getElementById("profileCount").textContent = profiles.length;
+
+    document.getElementById("riskCount").textContent =
+        profiles.filter(item => !item.reviewed && item.risk !== "Low").length;
+
+    document.getElementById("appRiskCount").textContent =
+        apps.filter(item => !item.reviewed && item.risk !== "Low").length;
+
+    document.getElementById("reportProfiles").textContent = profiles.length;
+    document.getElementById("reportApps").textContent = apps.length;
+
+    renderProfiles();
+    renderApps();
+    renderBrands();
+    renderActivities();
+    renderOverview();
+}
+
+function initializeWorkspace() {
+    refreshWorkspace();
+
+    document.getElementById("scanMessage").textContent = "";
+}
+
+document.getElementById("scanForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const brand = document.getElementById("scanBrand").value.trim();
+    const type = document.getElementById("scanType").value;
+    const message = document.getElementById("scanMessage");
+
+    if (!brand) return;
+
+    message.style.color = "var(--cyan)";
+    message.textContent = "Analyzing local demonstration records...";
+
+    setTimeout(function() {
+        let matches = 0;
+
+        if (type === "all" || type === "social") {
+            matches += sampleProfiles.filter(item =>
+                item.brand.toLowerCase().includes(brand.toLowerCase())
+            ).length;
+        }
+
+        if (type === "all" || type === "apps") {
+            matches += sampleApps.filter(item =>
+                item.brand.toLowerCase().includes(brand.toLowerCase())
+            ).length;
+        }
+
+        message.style.color = "var(--green)";
+        message.textContent =
+            "Demo scan completed for '" + brand + "'. " +
+            matches + " matching sample record(s) found. " +
+            "This is not a live threat scan.";
+
+        addActivity("Demo scan completed for " + brand + ".");
+        refreshWorkspace();
+
+    }, 500);
+});
+
+/* CSV EXPORT */
+
+function downloadCSV(filename, rows) {
+    const csv = rows.map(row =>
+        row.map(value => {
+            const safe = String(value ?? "");
+            return '"' + safe.replace(/"/g, '""') + '"';
+        }).join(",")
+    ).join("\r\n");
+
+    const blob = new Blob(["\uFEFF" + csv], {
+        type: "text/csv;charset=utf-8;"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = filename;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+}
+
+function exportProfiles() {
+    const rows = [
+        ["Brand", "Profile", "Platform", "Risk", "Reason", "Reviewed"]
+    ];
+
+    getProfiles().forEach(item => {
+        rows.push([
+            item.brand,
+            item.profile,
+            item.platform,
+            item.risk,
+            item.reason,
+            item.reviewed ? "Yes" : "No"
+        ]);
+    });
+
+    downloadCSV("cybershield-social-profiles.csv", rows);
+}
+
+function exportApps() {
+    const rows = [
+        ["Brand", "Application", "Platform", "Risk", "Reason", "Reviewed"]
+    ];
+
+    getApps().forEach(item => {
+        rows.push([
+            item.brand,
+            item.name,
+            item.platform,
+            item.risk,
+            item.reason,
+            item.reviewed ? "Yes" : "No"
+        ]);
+    });
+
+    downloadCSV("cybershield-mobile-apps.csv", rows);
+}
+
+function exportFullReport() {
+    const rows = [
+        ["Category", "Brand", "Profile/Application", "Platform", "Risk", "Reason", "Reviewed"]
+    ];
+
+    getProfiles().forEach(item => {
+        rows.push([
+            "Social Profile",
+            item.brand,
+            item.profile,
+            item.platform,
+            item.risk,
+            item.reason,
+            item.reviewed ? "Yes" : "No"
+        ]);
+    });
+
+    getApps().forEach(item => {
+        rows.push([
+            "Mobile App",
+            item.brand,
+            item.name,
+            item.platform,
+            item.risk,
+            item.reason,
+            item.reviewed ? "Yes" : "No"
+        ]);
+    });
+
+    downloadCSV("cybershield-full-report.csv", rows);
+}
+
+/* RESTORE SESSION WHEN THE PAGE RELOADS */
+
+try {
+    const session = readData(DB.session, null);
+
+    if (session && session.email && session.name) {
+        openApp();
+    }
+} catch (error) {
+    console.error("Could not restore the demo session.", error);
+}
+</script>
+
+</body>
+</html>

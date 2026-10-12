@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberShield | Digital Risk Protection</title>
+<style>
+:root{
+--bg:#08111f;--panel:#111d31;--panel2:#17263d;
+--border:#293c59;--blue:#397cff;--cyan:#36d9e7;
+--text:#f0f5ff;--muted:#9baec9;--red:#ff5268;
+--orange:#ffb454;--green:#40d9a0;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+input,select,textarea{
+width:100%;background:#0a1728;color:white;border:1px solid var(--border);
+border-radius:8px;padding:12px;outline:none
+}
+input:focus,select:focus,textarea:focus{border-color:var(--cyan)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.btn{border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:white;background:var(--panel2);font-size:13px}
+.btn-primary{background:var(--blue);border-color:var(--blue)}
+.btn-danger{background:#492131;border-color:#873747}
+.btn-success{background:#153e39;border-color:#287567}
+.muted{color:var(--muted)}
+.small{font-size:11px}
+.hidden{display:none!important}
+.badge{display:inline-block;padding:5px 8px;border-radius:6px;font-size:10px;font-weight:bold}
+.high{background:#48232f;color:#ff8796}
+.medium{background:#4a3925;color:#ffc77c}
+.low{background:#193b37;color:#70e4b5}
+.info{background:#1c3454;color:#9cc6ff}
+.closed{background:#253449;color:#9db0c8}
+h1{font-size:27px;margin:0 0 9px}
+h2{font-size:18px;margin:0 0 17px}
+h3{font-size:15px}
+.subtitle{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:23px}
+.grid{display:grid;gap:18px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:20px;min-width:0}
+.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:22px}
+.stat-label{font-size:12px;color:var(--muted)}
+.stat-num{font-size:30px;font-weight:bold;margin-top:15px}
+.red{color:var(--red)}.cyan{color:var(--cyan)}.orange{color:var(--orange)}.green{color:var(--green)}
+.two-col{grid-template-columns:1.4fr 1fr;margin-bottom:22px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.field{display:flex;flex-direction:column;gap:8px;color:var(--muted);font-size:12px}
+.full{grid-column:1/-1}
+.form-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.app{display:flex;min-height:100vh}
+.sidebar{width:245px;position:fixed;top:0;bottom:0;overflow:auto;background:#0b1729;border-right:1px solid var(--border);padding:23px 15px}
+.logo{display:flex;gap:10px;align-items:center;font-size:20px;font-weight:bold;margin-bottom:32px}
+.logo-icon{width:40px;height:40px;display:grid;place-items:center;background:linear-gradient(135deg,var(--blue),var(--cyan));border-radius:12px;font-size:23px}
+.logo small{display:block;font-size:9px;color:var(--cyan);letter-spacing:1.5px;margin-top:4px}
+.nav-label{color:#7185a4;font-size:10px;letter-spacing:1.5px;margin:22px 10px 10px}
+.nav-btn{display:block;width:100%;text-align:left;border:0;border-radius:8px;padding:13px 12px;margin:4px 0;background:transparent;color:var(--muted)}
+.nav-btn:hover,.nav-btn.active{background:#1b3150;color:white}
+.nav-btn.active{border-left:3px solid var(--cyan)}
+.main{margin-left:245px;width:calc(100% - 245px);min-width:0}
+.topbar{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 27px;border-bottom:1px solid var(--border);background:#0b1729;position:sticky;top:0;z-index:5;gap:10px}
+.topright{display:flex;align-items:center;gap:10px}
+.avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#27416a;font-weight:bold}
+.content{padding:27px;max-width:1500px;margin:auto}
+.page{display:none}.page.active{display:block}
+.table-card{padding:0;overflow:hidden;margin-bottom:22px}
+.table-head{padding:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.table-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}
+th,td{text-align:left;padding:14px 15px;border-bottom:1px solid #22344e}
+th{background:#14233a;color:#8fa5c4;font-weight:500}
+td{color:#dce6f6}
+tbody tr:hover{background:#16253b}
+.search{width:220px}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.asset-list{display:grid;gap:10px}
+.asset{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--border);border-radius:9px;padding:13px}
+.asset-main{display:flex;align-items:center;gap:12px;min-width:0}
+.asset-icon{width:38px;height:38px;flex-shrink:0;display:grid;place-items:center;background:#203957;border-radius:10px}
+.asset-name{font-size:13px;font-weight:bold;overflow-wrap:anywhere}
+.asset-sub{font-size:11px;color:var(--muted);margin-top:5px;overflow-wrap:anywhere}
+.empty{text-align:center;padding:25px;color:var(--muted)}
+.progress{height:6px;background:#263852;border-radius:5px;overflow:hidden;margin-top:8px}
+.progress span{height:100%;display:block;background:var(--blue)}
+.scan-box{padding:23px;border:1px solid #2a4c72;border-radius:12px;background:linear-gradient(135deg,#132746,#102238);margin-bottom:20px}
+.result{display:none;margin-top:17px;padding:16px;background:#0b1a2b;border:1px solid var(--border);border-radius:10px}
+.footer-note{font-size:11px;line-height:1.7;color:#7084a3;margin-top:17px}
+.toast{position:fixed;right:20px;bottom:20px;background:#183a36;border:1px solid #347b6c;color:#d9fff3;padding:14px 18px;border-radius:10px;z-index:30;display:none;max-width:340px;font-size:13px}
+.mobile-menu{display:none}
+.auth-screen{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:22px;background:radial-gradient(ellipse at top,#173258 0%,#08111f 58%)}
+.auth-card{width:100%;max-width:440px;background:#111d31;border:1px solid var(--border);border-radius:18px;padding:30px;box-shadow:0 25px 90px #0005}
+.auth-brand{display:flex;align-items:center;gap:12px;margin-bottom:27px}
+.auth-title{font-size:25px;font-weight:bold}
+.auth-card .field{margin-bottom:16px}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:22px}
+.auth-tab{padding:11px;background:#0b1729;color:var(--muted);border:1px solid var(--border);border-radius:8px}
+.auth-tab.active{background:#1c3c67;color:white;border-color:var(--blue)}
+.auth-error{color:#ff8996;font-size:12px;line-height:1.6;margin-top:12px}
+.auth-info{background:#0b1729;border:1px solid var(--border);border-radius:9px;padding:13px;font-size:12px;color:var(--muted);line-height:1.8;margin:16px 0}
+.role-pill{font-size:11px;color:var(--cyan);border:1px solid #24506a;border-radius:20px;padding:7px 10px}
+@media(max-width:1050px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.two-col{grid-template-columns:1fr}}
+@media(max-width:760px){
+.sidebar{transform:translateX(-100%);transition:.25s;z-index:10}
+.sidebar.open{transform:translateX(0)}
+.main{margin-left:0;width:100%}
+.content{padding:18px 13px}
+.topbar{height:63px;padding:0 13px}
+.mobile-menu{display:block}
+.two-col{grid-template-columns:1fr}
+.form-grid{grid-template-columns:1fr}
+.full{grid-column:auto}
+.card{padding:15px}
+.stats{gap:10px}
+.stat-num{font-size:25px}
+.search{width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN AND REGISTRATION -->
+<div id="authScreen" class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="logo-icon">⬡</div>
+      <div><div class="auth-title">CyberShield</div><div class="small cyan">DIGITAL RISK PROTECTION</div></div>
+    </div>
+
+    <div class="auth-tabs">
+      <button id="loginTab" class="auth-tab active" type="button" onclick="showAuth('login')">Login</button>
+      <button id="registerTab" class="auth-tab" type="button" onclick="showAuth('register')">Register</button>
+    </div>
+
+    <form id="loginForm">
+      <h2>Welcome back</h2>
+      <p class="muted small">Sign in to your security workspace.</p>
+      <label class="field">Email Address<input id="loginEmail" type="email" placeholder="you@example.com" autocomplete="username" required></label>
+      <label class="field">Password<input id="loginPassword" type="password" placeholder="Enter password" autocomplete="current-password" required></label>
+      <button class="btn btn-primary" style="width:100%;margin-top:7px" type="submit">Sign In</button>
+      <div class="auth-error" id="loginError"></div>
+      <div class="auth-info">
+        <strong style="color:white">Owner Demo Account</strong><br>
+        Email: owner@cybershield.drp<br>
+        Password: owner@123
+      </div>
+      <p class="small muted">New user? <a href="#" style="color:var(--cyan)" onclick="showAuth('register');return false">Create an account</a></p>
+    </form>
+
+    <form id="registerForm" class="hidden">
+      <h2>Create your account</h2>
+      <p class="muted small">Register as a standard user.</p>
+      <label class="field">Full Name<input id="regName" placeholder="Your full name" autocomplete="name" required maxlength="80"></label>
+      <label class="field">Email Address<input id="regEmail" type="email" placeholder="you@example.com" autocomplete="email" required maxlength="150"></label>
+      <label class="field">Password<input id="regPassword" type="password" placeholder="At least 8 characters" autocomplete="new-password" minlength="8" required></label>
+      <label class="field">Confirm Password<input id="regConfirm" type="password" placeholder="Re-enter password" autocomplete="new-password" minlength="8" required></label>
+      <button class="btn btn-primary" style="width:100%;margin-top:7px" type="submit">Create Account</button>
+      <div class="auth-error" id="registerError"></div>
+      <p class="small muted">Already registered? <a href="#" style="color:var(--cyan)" onclick="showAuth('login');return false">Login</a></p>
+    </form>
+    <div class="footer-note">Demo only: authentication data is stored in this browser. Do not use real passwords or sensitive information. A production system needs a secure backend.</div>
+  </div>
+</div>
+
+<!-- MAIN APPLICATION -->
+<div id="application" class="app hidden">
+<aside class="sidebar" id="sidebar">
+  <div class="logo"><div class="logo-icon">⬡</div><div>CyberShield<small>DIGITAL RISK PROTECTION</small></div></div>
+  <div class="nav-label">WORKSPACE</div>
+  <button class="nav-btn active" data-page="dashboard">▦ &nbsp; Dashboard</button>
+  <button class="nav-btn" data-page="threats" data-owner>⚠ &nbsp; Threat Management</button>
+  <button class="nav-btn" data-page="social">◎ &nbsp; Social Monitoring</button>
+  <button class="nav-btn" data-page="apps">▣ &nbsp; App Monitoring</button>
+  <div class="nav-label">CONFIGURATION</div>
+  <button class="nav-btn" data-page="brand" data-owner>◈ &nbsp; Brand Profile</button>
+  <button class="nav-btn" data-page="scanner">⌕ &nbsp; Threat Scanner</button>
+  <button class="nav-btn" data-page="reports">▤ &nbsp; Reports & Activity</button>
+  <div class="auth-info"><span class="green">● Session Active</span><br>Access is based on your account role.</div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:10px">
+    <button class="btn mobile-menu" id="menuBtn">☰</button>
+    <span class="muted small">CyberShield /</span><strong id="breadcrumb">Dashboard</strong>
+  </div>
+  <div class="topright">
+    <span class="role-pill" id="roleLabel">USER</span>
+    <div class="avatar" id="avatar">U</div>
+    <button class="btn btn-danger" onclick="logout()">Logout</button>
+  </div>
+</header>
+
+<div class="content">
+
+<section class="page active" id="dashboard">
+  <div class="section-head"><div><h1>Security Overview</h1><div class="subtitle">Monitor brand impersonation risks across social platforms and mobile applications.</div></div><button class="btn btn-primary" onclick="navigate('scanner')">＋ Scan for Threats</button></div>
+  <div class="grid stats">
+    <div class="card"><div class="stat-label">Total Threats</div><div class="stat-num red" id="statThreats">0</div><div class="small muted">Tracked indicators</div></div>
+    <div class="card"><div class="stat-label">High Risk</div><div class="stat-num orange" id="statHigh">0</div><div class="small muted">Priority review</div></div>
+    <div class="card"><div class="stat-label">Social Threats</div><div class="stat-num cyan" id="statSocial">0</div><div class="small muted">Profiles and pages</div></div>
+    <div class="card"><div class="stat-label">App Threats</div><div class="stat-num green" id="statApps">0</div><div class="small muted">Mobile applications</div></div>
+  </div>
+  <div class="grid two-col">
+    <div class="card"><h2>Threat Distribution</h2><div id="chart" style="display:flex;align-items:end;gap:15px;height:180px;border-bottom:1px solid var(--border);padding-top:20px"></div><div class="footer-note">Counts reflect local threat records, not live platform scans.</div></div>
+    <div class="card"><h2>Risk Assessment</h2><div id="riskPercent" style="font-size:42px;font-weight:bold;color:var(--red)">0%</div><div class="muted small">High-risk share of tracked records</div><div id="riskBars" style="margin-top:25px"></div></div>
+  </div>
+  <div class="card table-card"><div class="table-head"><h2 style="margin:0">Recent Threats</h2><button class="btn" onclick="navigate('threats')">View All →</button></div><div class="table-scroll"><table><thead><tr><th>THREAT</th><th>PLATFORM</th><th>RISK</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="recentTable"></tbody></table></div></div>
+  <div class="footer-note">Illustrative demo data. Threats are not independently verified.</div>
+</section>
+
+<section class="page" id="threats" data-owner>
+  <div class="section-head"><div><h1>Threat Management</h1><div class="subtitle">Search, assess, review, and manage reported indicators.</div></div><button class="btn btn-primary" onclick="navigate('scanner')">＋ Add Threat</button></div>
+  <div class="grid stats">
+    <div class="card"><div class="stat-label">Open</div><div class="stat-num red" id="openCount">0</div></div>
+    <div class="card"><div class="stat-label">Under Review</div><div class="stat-num orange" id="reviewCount">0</div></div>
+    <div class="card"><div class="stat-label">Resolved</div><div class="stat-num green" id="resolvedCount">0</div></div>
+    <div class="card"><div class="stat-label">All Records</div><div class="stat-num cyan" id="allCount">0</div></div>
+  </div>
+  <div class="card table-card">
+    <div class="table-head"><h2 style="margin:0">Threat Register</h2><div class="tools"><input class="search" id="threatSearch" placeholder="Search threats..."><select id="riskFilter" style="width:130px"><option value="">All Risks</option><option>High</option><option>Medium</option><option>Low</option></select><select id="statusFilter" style="width:140px"><option value="">All Statuses</option><option>Open</option><option>Under Review</option><option>Resolved</option></select></div></div>
+    <div class="table-scroll"><table><thead><tr><th>NAME</th><th>TYPE</th><th>PLATFORM</th><th>INDICATOR</th><th>RISK</th><th>STATUS</th><th>ACTIONS</th></tr></thead><tbody id="threatTable"></tbody></table></div>
+    <div class="table-head small muted" id="tableSummary"></div>
+  </div>
+</section>
+
+<section class="page" id="social">
+  <div class="section-head"><div><h1>Social Monitoring</h1><div class="subtitle">Review suspicious profiles, fake pages, and possible impersonation.</div></div><button class="btn btn-primary" onclick="navigate('scanner')">＋ Report Profile</button></div>
+  <div class="grid stats"><div class="card"><div class="stat-label">Social Indicators</div><div class="stat-num cyan" id="socialTotal">0</div></div><div class="card"><div class="stat-label">High Risk</div><div class="stat-num red" id="socialHigh">0</div></div><div class="card"><div class="stat-label">Open Reviews</div><div class="stat-num orange" id="socialOpen">0</div></div><div class="card"><div class="stat-label">Platforms</div><div class="stat-num green" id="socialPlatforms">0</div></div></div>
+  <div class="card"><h2>Social Threat Indicators</h2><div class="asset-list" id="socialList"></div></div>
+</section>
+
+<section class="page" id="apps">
+  <div class="section-head"><div><h1>App Monitoring</h1><div class="subtitle">Review suspicious application listings and potential brand impersonation.</div></div><button class="btn btn-primary" onclick="navigate('scanner')">＋ Report App</button></div>
+  <div class="grid stats"><div class="card"><div class="stat-label">App Indicators</div><div class="stat-num cyan" id="appTotal">0</div></div><div class="card"><div class="stat-label">High Risk</div><div class="stat-num red" id="appHigh">0</div></div><div class="card"><div class="stat-label">Open Reviews</div><div class="stat-num orange" id="appOpen">0</div></div><div class="card"><div class="stat-label">Resolved</div><div class="stat-num green" id="appResolved">0</div></div></div>
+  <div class="card"><h2>Suspicious Applications</h2><div class="asset-list" id="appList"></div></div>
+</section>
+
+<section class="page" id="brand" data-owner>
+  <div class="section-head"><div><h1>Brand Profile</h1><div class="subtitle">Configure legitimate brand assets used during threat investigation.</div></div></div>
+  <div class="grid two-col">
+    <div class="card"><h2>Organization Details</h2>
+      <form id="brandForm"><div class="form-grid">
+        <label class="field full">Brand Name<input id="brandName" required></label>
+        <label class="field full">Official Website<input id="brandWebsite" placeholder="https://example.com"></label>
+        <label class="field full">Official Logo URL<input id="brandLogo" placeholder="https://example.com/logo.png"></label>
+        <label class="field full">Brand Keywords<textarea id="brandKeywords"></textarea></label>
+        <label class="field full">Official Social Accounts<textarea id="brandSocials"></textarea></label>
+        <label class="field full">Official Mobile Applications<textarea id="brandApps"></textarea></label>
+      </div><div class="form-actions"><button class="btn btn-primary">Save Brand Profile</button></div></form>
+    </div>
+    <div class="card"><h2>Registered Assets</h2><div class="asset-list" id="brandAssetList"></div></div>
+  </div>
+</section>
+
+<section class="page" id="scanner">
+  <div class="section-head"><div><h1>Threat Scanner</h1><div class="subtitle">Evaluate a reported profile, company page, app listing, or suspicious URL.</div></div></div>
+  <div class="scan-box"><h2>Inspect a Potential Threat</h2><p class="muted small">This demo uses local heuristic checks. It does not crawl websites or query social networks.</p>
+    <form id="scanForm"><div class="form-grid">
+      <label class="field">Indicator Type<select id="scanType"><option>Social Profile</option><option>Company Page</option><option>Mobile App</option><option>Suspicious URL</option></select></label>
+      <label class="field">Platform<select id="scanPlatform"><option>Instagram</option><option>Facebook</option><option>X / Twitter</option><option>LinkedIn</option><option>TikTok</option><option>Google Play</option><option>Apple App Store</option><option>Website</option><option>Other</option></select></label>
+      <label class="field">Name<input id="scanName" required placeholder="Profile or app name"></label>
+      <label class="field">URL / Package ID<input id="scanUrl" placeholder="https://example.com/profile"></label>
+      <label class="field full">Observed Indicators<textarea id="scanNotes" placeholder="Similar logo, unknown developer, suspicious requests..."></textarea></label>
+    </div><div class="form-actions"><button class="btn btn-primary">⌕ Analyze Indicator</button></div></form>
+    <div id="scanResult" class="result"></div>
+  </div>
+  <div class="card"><h2>Detection Rules</h2><div class="asset-list">
+    <div class="asset"><div><div class="asset-name">Brand Name Similarity</div><div class="asset-sub">Compare with configured keywords.</div></div><span class="badge info">Heuristic</span></div>
+    <div class="asset"><div><div class="asset-name">Impersonation Language</div><div class="asset-sub">Flag suspicious support or verification terms.</div></div><span class="badge info">Heuristic</span></div>
+    <div class="asset"><div><div class="asset-name">Suspicious URL Signals</div><div class="asset-sub">Check malformed URLs, shorteners, and host patterns.</div></div><span class="badge info">Heuristic</span></div>
+    <div class="asset"><div><div class="asset-name">App Identity Review</div><div class="asset-sub">Investigate package IDs and developer identity.</div></div><span class="badge info">Heuristic</span></div>
+  </div></div>
+</section>
+
+<section class="page" id="reports">
+  <div class="section-head"><div><h1>Reports & Activity</h1><div class="subtitle">Review activity and export threat records.</div></div><button class="btn btn-primary" onclick="exportCSV()">↓ Export CSV</button></div>
+  <div class="grid stats"><div class="card"><div class="stat-label">Total Records</div><div class="stat-num cyan" id="reportTotal">0</div></div><div class="card"><div class="stat-label">High Risk</div><div class="stat-num red" id="reportHigh">0</div></div><div class="card"><div class="stat-label">Resolved</div><div class="stat-num green" id="reportResolved">0</div></div><div class="card"><div class="stat-label">Activity Events</div><div class="stat-num orange" id="activityCount">0</div></div></div>
+  <div class="card"><div class="section-head"><h2 style="margin:0">Activity Log</h2><button class="btn" onclick="clearActivity()">Clear Log</button></div><div class="asset-list" id="activityList"></div></div>
+</section>
+
+</div>
+</main>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const OWNER_EMAIL="owner@cybershield.drp";
+const OWNER_PASSWORD="owner@123";
+
+/*
+ DEMO SECURITY NOTE:
+ Client-side credentials and role checks can be inspected or bypassed.
+ Use a server-side authentication and authorization system in production.
+*/
+let currentUser=null;
+
+function read(key,fallback){
+ try{const x=localStorage.getItem(key);return x===null?fallback:JSON.parse(x)}
+ catch(e){return fallback}
+}
+function write(key,value){
+ try{localStorage.setItem(key,JSON.stringify(value));return true}
+ catch(e){toast("Browser storage unavailable.");return false}
+}
+let users=read("cs_users",[]);
+let brand=read("cs_brand",{
+ name:"Acme Corporation",website:"https://www.example.com",logo:"",
+ keywords:"Acme, Acme Corp, Acme Wallet",
+ socials:"https://social.example/acme",
+ apps:"Acme Official | com.example.acme"
+});
+let threats=read("cs_threats",[
+ {id:1,name:"Acme Support Verification",type:"Social Profile",platform:"Instagram",indicator:"https://example.com/acme-help",risk:"High",score:91,status:"Open",notes:"Illustrative lookalike profile requiring investigation."},
+ {id:2,name:"Acme Customer Rewards",type:"Company Page",platform:"Facebook",indicator:"https://example.com/rewards",risk:"Medium",score:62,status:"Under Review",notes:"Illustrative promotional page requiring verification."},
+ {id:3,name:"Acme Wallet Pro",type:"Mobile App",platform:"Google Play",indicator:"com.example.acmewallet",risk:"High",score:86,status:"Open",notes:"Illustrative unknown developer indicator."},
+ {id:4,name:"Acme Official Help",type:"Social Profile",platform:"X / Twitter",indicator:"https://example.com/acme-helpdesk",risk:"Medium",score:55,status:"Open",notes:"Illustrative support identity."},
+ {id:5,name:"Acme Shopping Rewards",type:"Mobile App",platform:"Apple App Store",indicator:"com.example.acmerewards",risk:"Low",score:29,status:"Resolved",notes:"Illustrative resolved example."}
+]);
+let activities=read("cs_activity",[
+ {message:"Demo workspace initialized.",time:new Date().toLocaleString()}
+]);
+let nextId=Math.max(0,...threats.map(t=>Number(t.id)||0))+1;
+
+function escapeHTML(v){
+ return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function toast(msg){
+ const el=$("toast");el.textContent=msg;el.style.display="block";
+ clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.style.display="none",2800);
+}
+function log(msg){
+ activities.unshift({message:msg,time:new Date().toLocaleString()});
+ activities=activities.slice(0,100);write("cs_activity",activities);
+}
+function saveThreats(){write("cs_threats",threats)}
+function showAuth(which){
+ $("loginForm").classList.toggle("hidden",which!=="login");
+ $("registerForm").classList.toggle("hidden",which!=="register");
+ $("loginTab").classList.toggle("active",which==="login");
+ $("registerTab").classList.toggle("active",which==="register");
+ $("loginError").textContent="";$("registerError").textContent="";
+}
+function safeText(v){return String(v||"").trim()}
+function isSocial(t){return ["Social Profile","Company Page"].includes(t.type)}
+function isApp(t){return t.type==="Mobile App"}
+function badge(r){return `<span class="badge ${r==="High"?"high":r==="Medium"?"medium":"low"}">${escapeHTML(r)}</span>`}
+function statusBadge(s){return `<span class="badge ${s==="Resolved"?"closed":s==="Under Review"?"medium":"info"}">${escapeHTML(s)}</span>`}
+
+/* OWNER LOGIN */
+$("loginForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const email=safeText($("loginEmail").value).toLowerCase();
+ const password=$("loginPassword").value;
+ $("loginError").textContent="";
+
+ if(email===OWNER_EMAIL && password===OWNER_PASSWORD){
+  loginSuccess({name:"CyberShield Owner",email:OWNER_EMAIL,role:"owner"});
+  return;
+ }
+
+ const user=users.find(u=>u.email===email && u.password===password);
+ if(!user){
+  $("loginError").textContent="Invalid email or password. Register a user account or check your details.";
+  return;
+ }
+ loginSuccess({name:user.name,email:user.email,role:"user"});
+});
+
+$("registerForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const name=safeText($("regName").value);
+ const email=safeText($("regEmail").value).toLowerCase();
+ const password=$("regPassword").value;
+ const confirmPassword=$("regConfirm").value;
+ $("registerError").textContent="";
+
+ if(email===OWNER_EMAIL){
+  $("registerError").textContent="This email is reserved for the owner account.";
+  return;
+ }
+ if(password.length<8){
+  $("registerError").textContent="Password must contain at least 8 characters.";
+  return;
+ }
+ if(password!==confirmPassword){
+  $("registerError").textContent="Passwords do not match.";
+  return;
+ }
+ if(users.some(u=>u.email===email)){
+  $("registerError").textContent="This email is already registered. Please log in.";
+  return;
+ }
+ // Demo only: passwords are not securely protected in browser storage.
+ users.push({name,email,password});
+ if(!write("cs_users",users)){
+  users=users.filter(u=>u.email!==email);
+  $("registerError").textContent="Could not save the account in browser storage.";
+  return;
+ }
+ log("A standard user account was registered.");
+ loginSuccess({name,email,role:"user"});
+});
+
+function loginSuccess(user){
+ currentUser=user;
+ sessionStorage.setItem("cs_demo_session",JSON.stringify(user));
+ $("authScreen").classList.add("hidden");
+ $("application").classList.remove("hidden");
+ $("roleLabel").textContent=user.role==="owner"?"OWNER":"USER";
+ $("avatar").textContent=(user.name||"U").slice(0,1).toUpperCase();
+ applyPermissions();
+ log(`${user.role==="owner"?"Owner":"User"} logged in: ${user.email}`);
+ renderAll();
+ navigate("dashboard");
+}
+function restoreSession(){
+ try{
+  const saved=JSON.parse(sessionStorage.getItem("cs_demo_session")||"null");
+  if(saved && (saved.role==="owner" || saved.role==="user")){
+   if(saved.role==="owner" && saved.email===OWNER_EMAIL){
+    currentUser=saved;
+   }else if(saved.role==="user" && users.some(u=>u.email===saved.email)){
+    const u=users.find(x=>x.email===saved.email);
+    currentUser={name:u.name,email:u.email,role:"user"};
+   }
+  }
+ }catch(e){}
+ if(currentUser){
+  $("authScreen").classList.add("hidden");
+  $("application").classList.remove("hidden");
+  $("roleLabel").textContent=currentUser.role==="owner"?"OWNER":"USER";
+  $("avatar").textContent=(currentUser.name||"U").slice(0,1).toUpperCase();
+  applyPermissions();renderAll();
+ }else{
+  $("authScreen").classList.remove("hidden");
+  $("application").classList.add("hidden");
+ }
+}
+function logout(){
+ if(currentUser)log(`${currentUser.role} logged out.`);
+ currentUser=null;sessionStorage.removeItem("cs_demo_session");
+ $("application").classList.add("hidden");$("authScreen").classList.remove("hidden");
+ $("loginPassword").value="";showAuth("login");toast("Logged out successfully.");
+}
+function applyPermissions(){
+ const owner=currentUser?.role==="owner";
+ document.querySelectorAll("[data-owner]").forEach(el=>{
+  el.classList.toggle("hidden",!owner);
+ });
+ if(!owner && ["threats","brand"].includes($("breadcrumb").textContent)){
+  navigate("dashboard");
+ }
+}
+
+/* NAVIGATION AND PERMISSIONS */
+document.querySelectorAll(".nav-btn").forEach(btn=>{
+ btn.addEventListener("click",()=>{
+  const page=btn.dataset.page;
+  if(btn.hasAttribute("data-owner") && currentUser?.role!=="owner"){
+   toast("This section is restricted to the owner.");return;
+  }
+  navigate(page);
+ });
+});
+$("menuBtn").addEventListener("click",()=>$("sidebar").classList.toggle("open"));
+function navigate(page){
+ const target=document.getElementById(page);
+ if(!target)return;
+ if(target.hasAttribute("data-owner") && currentUser?.role!=="owner"){
+  toast("Owner permission required.");return;
+ }
+ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===page));
+ document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+ const nav=document.querySelector(`.nav-btn[data-page="${page}"]`);
+ $("breadcrumb").textContent=nav?nav.textContent.trim():page;
+ $("sidebar").classList.remove("open");
+ renderAll();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* DASHBOARD */
+function renderDashboard(){
+ const high=threats.filter(t=>t.risk==="High").length;
+ const social=threats.filter(isSocial),apps=threats.filter(isApp);
+ $("statThreats").textContent=threats.length;
+ $("statHigh").textContent=high;
+ $("statSocial").textContent=social.length;
+ $("statApps").textContent=apps.length;
+ $("riskPercent").textContent=Math.round(high/Math.max(1,threats.length)*100)+"%";
+ const riskTypes=["High","Medium","Low"];
+ $("riskBars").innerHTML=riskTypes.map(r=>{
+  const n=threats.filter(t=>t.risk===r).length;
+  return `<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;font-size:12px"><span>${r} risk</span><strong>${n}</strong></div><div class="progress"><span style="width:${n/Math.max(1,threats.length)*100}%;background:${r==="High"?"var(--red)":r==="Medium"?"var(--orange)":"var(--green)"}"></span></div></div>`;
+ }).join("");
+ const groups=[["Social",social.length],["Mobile Apps",apps.length],["Suspicious URLs",threats.filter(t=>t.type==="Suspicious URL").length]];
+ const max=Math.max(1,...groups.map(g=>g[1]));
+ $("chart").innerHTML=groups.map(([label,n])=>`<div style="flex:1;text-align:center;height:100%;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:8px"><div style="height:${Math.max(5,n/max*130)}px;width:35px;background:linear-gradient(180deg,var(--cyan),var(--blue));border-radius:5px 5px 0 0" title="${n} records"></div><span class="small muted">${escapeHTML(label)}</span><strong style="font-size:12px">${n}</strong></div>`).join("");
+ $("recentTable").innerHTML=threats.slice(0,5).map(t=>`<tr><td>${escapeHTML(t.name)}</td><td>${escapeHTML(t.platform)}</td><td>${badge(t.risk)}</td><td>${statusBadge(t.status)}</td><td><button class="btn" onclick="reviewThreat(${t.id})">Review</button></td></tr>`).join("")||`<tr><td colspan="5" class="empty">No threats.</td></tr>`;
+}
+
+/* THREAT MANAGEMENT */
+function renderThreats(){
+ const q=$("threatSearch").value.toLowerCase(),risk=$("riskFilter").value,status=$("statusFilter").value;
+ const rows=threats.filter(t=>[t.name,t.type,t.platform,t.indicator,t.notes].join(" ").toLowerCase().includes(q)&&(!risk||t.risk===risk)&&(!status||t.status===status));
+ $("threatTable").innerHTML=rows.map(t=>`<tr><td>${escapeHTML(t.name)}<div class="small muted">#${t.id}</div></td><td>${escapeHTML(t.type)}</td><td>${escapeHTML(t.platform)}</td><td style="white-space:normal;overflow-wrap:anywhere;max-width:220px">${escapeHTML(t.indicator||"Not provided")}</td><td>${badge(t.risk)}<div class="small muted">Score ${t.score}/100</div></td><td>${statusBadge(t.status)}</td><td><div class="tools"><button class="btn" onclick="reviewThreat(${t.id})">Update</button><button class="btn btn-danger" onclick="deleteThreat(${t.id})">Delete</button></div></td></tr>`).join("")||`<tr><td colspan="7" class="empty">No matching records.</td></tr>`;
+ $("tableSummary").textContent=`Showing ${rows.length} of ${threats.length} records`;
+ $("openCount").textContent=threats.filter(t=>t.status==="Open").length;
+ $("reviewCount").textContent=threats.filter(t=>t.status==="Under Review").length;
+ $("resolvedCount").textContent=threats.filter(t=>t.status==="Resolved").length;
+ $("allCount").textContent=threats.length;
+}
+["threatSearch","riskFilter","statusFilter"].forEach(id=>$(id).addEventListener(id==="threatSearch"?"input":"change",renderThreats));
+
+function reviewThreat(id){
+ if(currentUser?.role!=="owner"){toast("Only the owner can change threat status.");return;}
+ const t=threats.find(x=>x.id===id);if(!t)return;
+ const options=["Open","Under Review","Resolved"];
+ const next=options[(options.indexOf(t.status)+1)%options.length];
+ if(!confirm(`Change ${t.name} to ${next}?`))return;
+ t.status=next;saveThreats();log(`Threat #${id} status changed to ${next}.`);
+ renderAll();toast("Threat status updated.");
+}
+function deleteThreat(id){
+ if(currentUser?.role!=="owner"){toast("Only the owner can delete threat records.");return;}
+ const t=threats.find(x=>x.id===id);if(!t)return;
+ if(!confirm("Delete this threat record?"))return;
+ threats=threats.filter(x=>x.id!==id);saveThreats();log("Threat deleted: "+t.name);
+ renderAll();toast("Threat deleted.");
+}
+
+/* SOCIAL AND APP VIEWS */
+function renderSocial(){
+ const arr=threats.filter(isSocial);
+ $("socialTotal").textContent=arr.length;
+ $("socialHigh").textContent=arr.filter(t=>t.risk==="High").length;
+ $("socialOpen").textContent=arr.filter(t=>t.status!=="Resolved").length;
+ $("socialPlatforms").textContent=new Set(arr.map(t=>t.platform)).size;
+ $("socialList").innerHTML=arr.map(t=>`<div class="asset"><div class="asset-main"><div class="asset-icon">◎</div><div><div class="asset-name">${escapeHTML(t.name)}</div><div class="asset-sub">${escapeHTML(t.platform)} · ${escapeHTML(t.indicator)}</div><div class="asset-sub">${escapeHTML(t.notes)}</div></div></div>${badge(t.risk)}</div>`).join("")||`<div class="empty">No social indicators recorded.</div>`;
+}
+function renderApps(){
+ const arr=threats.filter(isApp);
+ $("appTotal").textContent=arr.length;
+ $("appHigh").textContent=arr.filter(t=>t.risk==="High").length;
+ $("appOpen").textContent=arr.filter(t=>t.status!=="Resolved").length;
+ $("appResolved").textContent=arr.filter(t=>t.status==="Resolved").length;
+ $("appList").innerHTML=arr.map(t=>`<div class="asset"><div class="asset-main"><div class="asset-icon">▣</div><div><div class="asset-name">${escapeHTML(t.name)}</div><div class="asset-sub">${escapeHTML(t.platform)} · ${escapeHTML(t.indicator)}</div><div class="asset-sub">${escapeHTML(t.notes)}</div></div></div>${badge(t.risk)}</div>`).join("")||`<div class="empty">No app indicators recorded.</div>`;
+}
+
+/* BRAND PROFILE - OWNER ONLY */
+function renderBrand(){
+ $("brandName").value=brand.name||"";
+ $("brandWebsite").value=brand.website||"";
+ $("brandLogo").value=brand.logo||"";
+ $("brandKeywords").value=brand.keywords||"";
+ $("brandSocials").value=brand.socials||"";
+ $("brandApps").value=brand.apps||"";
+ const items=[["Brand",brand.name],["Website",brand.website],["Logo",brand.logo],["Keywords",brand.keywords],["Social Accounts",brand.socials],["Official Apps",brand.apps]];
+ $("brandAssetList").innerHTML=items.map(([k,v])=>`<div class="asset"><div><div class="asset-name">${escapeHTML(k)}</div><div class="asset-sub">${escapeHTML(v||"Not configured")}</div></div><span class="badge info">Asset</span></div>`).join("");
+}
+$("brandForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ if(currentUser?.role!=="owner"){toast("Owner permission required.");return;}
+ brand={name:safeText($("brandName").value),website:safeText($("brandWebsite").value),logo:safeText($("brandLogo").value),keywords:safeText($("brandKeywords").value),socials:safeText($("brandSocials").value),apps:safeText($("brandApps").value)};
+ write("cs_brand",brand);log("Brand profile updated.");renderBrand();toast("Brand profile saved.");
+});
+
+/* LOCAL HEURISTIC SCANNER */
+function evaluate(input){
+ const name=input.name.toLowerCase(),url=input.indicator.toLowerCase(),notes=input.notes.toLowerCase();
+ const keywords=(brand.keywords||"").split(/[\n,;]+/).map(s=>s.trim().toLowerCase()).filter(Boolean);
+ const brandName=(brand.name||"").toLowerCase();
+ let score=10;const reasons=[];
+ if(brandName&&name.includes(brandName)){score+=25;reasons.push("Name matches configured brand name.")}
+ if(keywords.some(k=>k.length>2&&name.includes(k))){score+=25;reasons.push("Name matches a configured keyword.")}
+ if(["verify","verification","support","helpdesk","security","official","rewards","free gift","claim prize","password","urgent","wallet"].some(k=>(name+" "+notes).includes(k))){score+=15;reasons.push("Potentially suspicious language detected.")}
+ if(url){
+  try{
+   const u=new URL(url),host=u.hostname.toLowerCase();
+   if(u.protocol!=="https:"){score+=15;reasons.push("URL does not use HTTPS.")}
+   if(host.includes("xn--")){score+=25;reasons.push("Hostname uses punycode.")}
+   if(["bit.ly","tinyurl.com","t.co","cutt.ly","rb.gy"].includes(host)){score+=20;reasons.push("URL shortener detected.")}
+   if(host.split(".").length>=4){score+=10;reasons.push("Hostname contains multiple subdomains.")}
+   if(brandName&&host.includes(brandName.replace(/[^a-z0-9]/g,""))){score+=10;reasons.push("Brand-like text appears in hostname; verify domain ownership.")}
+  }catch(err){if(input.type==="Suspicious URL"){score+=15;reasons.push("URL format requires review.")}}
+ }
+ if(input.type==="Mobile App"){score+=10;reasons.push("Check app developer, package ID, permissions, and official listing.")}
+ if(!reasons.length)reasons.push("No strong heuristic signal found; manual review may still be needed.");
+ score=Math.min(100,score);
+ return {score,risk:score>=65?"High":score>=35?"Medium":"Low",reasons};
+}
+$("scanForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const input={type:$("scanType").value,platform:$("scanPlatform").value,name:safeText($("scanName").value),indicator:safeText($("scanUrl").value),notes:safeText($("scanNotes").value)};
+ if(!input.name){toast("Enter an indicator name.");return;}
+ const r=evaluate(input),el=$("scanResult");el.style.display="block";
+ el.innerHTML=`<div class="section-head"><div><h3>Analysis Result</h3><div class="small muted">Local heuristic result — not a verified threat verdict</div></div>${badge(r.risk)}</div><div style="font-size:32px;font-weight:bold">${r.score}<span class="small muted"> / 100</span></div><div class="progress"><span style="width:${r.score}%;background:${r.risk==="High"?"var(--red)":r.risk==="Medium"?"var(--orange)":"var(--green)"}"></span></div><ul style="font-size:12px;line-height:1.9">${r.reasons.map(x=>`<li>${escapeHTML(x)}</li>`).join("")}</ul><p class="small muted">Validate findings independently before taking action.</p><button id="saveFinding" class="btn btn-primary">＋ Add to Threat Register</button>`;
+ log("Heuristic scan performed for "+input.name+".");
+ $("saveFinding").addEventListener("click",()=>{
+  if(currentUser?.role!=="owner"){toast("User scan complete. Only the owner can add a record to the shared threat register.");return;}
+  threats.unshift({id:nextId++,...input,...r,status:"Open"});
+  saveThreats();log("Threat indicator added: "+input.name);renderAll();toast("Threat added to register.");
+ });
+});
+
+/* REPORTS */
+function renderReports(){
+ $("reportTotal").textContent=threats.length;
+ $("reportHigh").textContent=threats.filter(t=>t.risk==="High").length;
+ $("reportResolved").textContent=threats.filter(t=>t.status==="Resolved").length;
+ $("activityCount").textContent=activities.length;
+ $("activityList").innerHTML=activities.map(a=>`<div class="asset"><div><div class="asset-name">${escapeHTML(a.message)}</div><div class="asset-sub">${escapeHTML(a.time)}</div></div><span class="badge info">Activity</span></div>`).join("")||`<div class="empty">No activity yet.</div>`;
+}
+function clearActivity(){
+ if(currentUser?.role!=="owner"){toast("Only the owner can clear the activity log.");return;}
+ if(!confirm("Clear all activity events?"))return;
+ activities=[];write("cs_activity",activities);renderReports();toast("Activity log cleared.");
+}
+function exportCSV(){
+ if(currentUser?.role!=="owner"){toast("Only the owner can export the shared threat register.");return;}
+ const cols=["id","name","type","platform","indicator","risk","score","status","notes"];
+ const csv=[cols,...threats.map(t=>cols.map(c=>t[c]??""))].map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\r\n");
+ const url=URL.createObjectURL(new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"}));
+ const a=document.createElement("a");a.href=url;a.download="cybershield-threat-report.csv";a.click();URL.revokeObjectURL(url);
+ log("Threat report exported.");renderReports();toast("CSV exported.");
+}
+function renderAll(){
+ renderDashboard();renderSocial();renderApps();renderBrand();renderReports();
+ if(currentUser?.role==="owner")renderThreats();
+}
+restoreSession();
+</script>
+</body>
+</html>

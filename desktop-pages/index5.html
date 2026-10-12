@@ -1,0 +1,2215 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberShield | Digital Risk Protection</title>
+
+<style>
+:root {
+    --bg: #08111f;
+    --panel: #111d31;
+    --panel2: #17263d;
+    --border: #293b55;
+    --blue: #397cff;
+    --cyan: #36d9e7;
+    --green: #28d99a;
+    --yellow: #ffbd45;
+    --red: #ff5570;
+    --text: #edf4ff;
+    --muted: #9aabc4;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+button, input, select, textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 245px;
+    background: #0b1628;
+    border-right: 1px solid var(--border);
+    padding: 25px 15px;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 10;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 10px 30px;
+}
+
+.logo-icon {
+    width: 43px;
+    height: 43px;
+    border-radius: 13px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    font-size: 24px;
+    color: white;
+}
+
+.logo h2 {
+    font-size: 19px;
+}
+
+.logo span {
+    color: var(--cyan);
+}
+
+.logo small {
+    display: block;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 4px;
+    letter-spacing: 1.5px;
+}
+
+.nav-label {
+    font-size: 10px;
+    color: #71849f;
+    padding: 15px 12px 9px;
+    letter-spacing: 1.5px;
+}
+
+.nav-btn {
+    width: 100%;
+    border: 0;
+    padding: 13px 12px;
+    margin: 3px 0;
+    color: #a9bad3;
+    background: transparent;
+    text-align: left;
+    border-radius: 9px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    transition: .2s;
+}
+
+.nav-btn:hover, .nav-btn.active {
+    background: #1a2e4c;
+    color: white;
+}
+
+.nav-btn.active {
+    border-left: 3px solid var(--cyan);
+}
+
+.nav-icon {
+    width: 20px;
+    text-align: center;
+    font-size: 17px;
+}
+
+.sidebar-bottom {
+    border-top: 1px solid var(--border);
+    margin-top: 35px;
+    padding: 20px 10px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+}
+
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-right: 7px;
+}
+
+.main {
+    margin-left: 245px;
+    width: calc(100% - 245px);
+    min-width: 0;
+}
+
+.topbar {
+    min-height: 80px;
+    border-bottom: 1px solid var(--border);
+    padding: 17px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    background: #0b1628;
+}
+
+.topbar h1 {
+    font-size: 21px;
+}
+
+.topbar p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.demo-tag {
+    border: 1px solid #725c2a;
+    color: var(--yellow);
+    padding: 8px 10px;
+    border-radius: 7px;
+    font-size: 11px;
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #263d60;
+    font-weight: bold;
+}
+
+.content {
+    padding: 27px 30px 50px;
+    max-width: 1600px;
+    margin: auto;
+}
+
+.page {
+    display: none;
+    animation: appear .25s ease;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes appear {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.welcome {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.welcome h2 {
+    font-size: 25px;
+}
+
+.welcome p {
+    color: var(--muted);
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.btn {
+    padding: 11px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    color: white;
+    background: var(--panel2);
+    font-size: 12px;
+    transition: .2s;
+}
+
+.btn:hover {
+    filter: brightness(1.2);
+    transform: translateY(-1px);
+}
+
+.btn-primary {
+    background: var(--blue);
+    border-color: var(--blue);
+}
+
+.btn-danger {
+    background: #542436;
+    border-color: #82405a;
+    color: #ffb4c0;
+}
+
+.btn-success {
+    background: #123e38;
+    border-color: #1d6b5d;
+    color: #7cf1cb;
+}
+
+.grid {
+    display: grid;
+    gap: 18px;
+}
+
+.stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-bottom: 22px;
+}
+
+.card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 21px;
+    min-width: 0;
+}
+
+.stat-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--muted);
+    font-size: 12px;
+    gap: 8px;
+}
+
+.stat-icon {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    background: #1e3352;
+    font-size: 19px;
+}
+
+.stat-value {
+    font-size: 31px;
+    font-weight: bold;
+    margin: 17px 0 8px;
+}
+
+.stat-foot {
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.green { color: var(--green); }
+.red { color: var(--red); }
+.yellow { color: var(--yellow); }
+.cyan { color: var(--cyan); }
+
+.two-col {
+    grid-template-columns: 1.4fr 1fr;
+    margin-bottom: 22px;
+}
+
+.section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.section-head h3 {
+    font-size: 15px;
+}
+
+.section-head p {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 6px;
+}
+
+.risk-row {
+    display: grid;
+    grid-template-columns: 110px 1fr 40px;
+    gap: 12px;
+    align-items: center;
+    margin: 22px 0;
+    font-size: 12px;
+}
+
+.bar {
+    height: 8px;
+    background: #24344b;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 20px;
+    transition: width .3s;
+}
+
+.bar-red { background: var(--red); }
+.bar-yellow { background: var(--yellow); }
+.bar-green { background: var(--green); }
+.bar-blue { background: var(--blue); }
+
+.legend {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 20px;
+}
+
+.legend span::before {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    background: var(--red);
+    border-radius: 2px;
+    margin-right: 6px;
+}
+
+.legend .medium::before { background: var(--yellow); }
+.legend .low::before { background: var(--green); }
+
+.activity {
+    display: flex;
+    gap: 12px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.activity:last-child { border: 0; }
+
+.activity-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    background: #302438;
+}
+
+.activity h4 {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.activity p {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 6px;
+    line-height: 1.6;
+}
+
+.activity time {
+    display: block;
+    color: #71849f;
+    font-size: 10px;
+    margin-top: 7px;
+}
+
+.table-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+.table-title {
+    padding: 21px;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    min-width: 720px;
+}
+
+th {
+    padding: 14px 20px;
+    background: #142238;
+    color: #91a6c3;
+    font-size: 10px;
+    letter-spacing: .7px;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+}
+
+td small {
+    display: block;
+    margin-top: 5px;
+    color: var(--muted);
+}
+
+.badge {
+    display: inline-block;
+    padding: 6px 9px;
+    border-radius: 5px;
+    font-size: 10px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.badge-high {
+    color: #ff8c9e;
+    background: #422032;
+}
+
+.badge-medium {
+    color: #ffd17a;
+    background: #41351f;
+}
+
+.badge-low {
+    color: #79ebbf;
+    background: #153d35;
+}
+
+.badge-pending {
+    color: #a6c6ff;
+    background: #20375a;
+}
+
+.badge-resolved {
+    color: #79ebbf;
+    background: #153d35;
+}
+
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.input, .select, textarea {
+    background: #0b1729;
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 11px 12px;
+    border-radius: 8px;
+    outline: none;
+    min-width: 0;
+}
+
+.input:focus, .select:focus, textarea:focus {
+    border-color: var(--cyan);
+}
+
+.search {
+    flex: 1;
+    min-width: 180px;
+}
+
+.table-actions {
+    display: flex;
+    gap: 7px;
+}
+
+.table-actions button {
+    padding: 7px 9px;
+    font-size: 10px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.field label {
+    font-size: 12px;
+    color: #b7c6db;
+}
+
+.field input, .field select, .field textarea {
+    width: 100%;
+}
+
+.field textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+.field.full {
+    grid-column: 1 / -1;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+    flex-wrap: wrap;
+}
+
+.asset-list {
+    margin-top: 20px;
+}
+
+.asset {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding: 16px 0;
+}
+
+.asset:last-child { border-bottom: 0; }
+
+.asset h4 {
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.asset p {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 5px;
+    overflow-wrap: anywhere;
+}
+
+.asset-actions {
+    display: flex;
+    gap: 7px;
+    flex-shrink: 0;
+}
+
+.empty {
+    text-align: center;
+    padding: 35px 15px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.notice {
+    padding: 14px 16px;
+    border: 1px solid #2a5368;
+    background: #10283a;
+    border-radius: 9px;
+    color: #b6eaf2;
+    font-size: 12px;
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+
+.toast {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 100;
+    background: #17382f;
+    color: #9ff5d1;
+    border: 1px solid #2a735e;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 10px 40px #0006;
+    max-width: 350px;
+    font-size: 13px;
+    display: none;
+}
+
+.mobile-menu {
+    display: none;
+    border: 0;
+    background: transparent;
+    color: white;
+    font-size: 23px;
+}
+
+footer {
+    color: #657995;
+    text-align: center;
+    font-size: 11px;
+    padding: 30px 10px;
+    line-height: 1.8;
+}
+
+@media (max-width: 1100px) {
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .two-col { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 700px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform .25s;
+        box-shadow: 15px 0 40px #0004;
+    }
+
+    .sidebar.open { transform: translateX(0); }
+
+    .main {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .topbar { padding: 15px; }
+    .topbar h1 { font-size: 17px; }
+    .topbar p { font-size: 10px; }
+    .mobile-menu { display: block; }
+    .demo-tag { display: none; }
+    .content { padding: 20px 14px 35px; }
+    .welcome { align-items: flex-start; flex-direction: column; }
+    .welcome h2 { font-size: 22px; }
+    .stats { gap: 10px; }
+    .card { padding: 15px; }
+    .stat-value { font-size: 25px; }
+    .stat-head { font-size: 10px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .field.full { grid-column: auto; }
+    .risk-row { grid-template-columns: 85px 1fr 30px; gap: 8px; }
+    .avatar { width: 32px; height: 32px; }
+}
+
+@media print {
+    .sidebar, .topbar, .no-print, .btn, .toolbar, footer {
+        display: none !important;
+    }
+
+    .main {
+        margin: 0;
+        width: 100%;
+    }
+
+    body {
+        background: white;
+        color: black;
+    }
+
+    .card {
+        background: white;
+        color: black;
+        border: 1px solid #bbb;
+        break-inside: avoid;
+    }
+
+    .page { display: none !important; }
+    .page.active { display: block !important; }
+    th { background: #eee; color: black; }
+    td, th { border-color: #ccc; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="logo">
+        <div class="logo-icon">🛡</div>
+        <div>
+            <h2>Cyber<span>Shield</span></h2>
+            <small>DIGITAL RISK PROTECTION</small>
+        </div>
+    </div>
+
+    <div class="nav-label">MAIN MENU</div>
+
+    <button class="nav-btn active" data-page="dashboard">
+        <span class="nav-icon">▦</span> Dashboard
+    </button>
+
+    <button class="nav-btn" data-page="brand">
+        <span class="nav-icon">◈</span> Brand Profile
+    </button>
+
+    <button class="nav-btn" data-page="social">
+        <span class="nav-icon">◎</span> Social Monitoring
+    </button>
+
+    <button class="nav-btn" data-page="apps">
+        <span class="nav-icon">▣</span> App Monitoring
+    </button>
+
+    <button class="nav-btn" data-page="threats">
+        <span class="nav-icon">⚠</span> Threat Intelligence
+    </button>
+
+    <button class="nav-btn" data-page="reports">
+        <span class="nav-icon">▤</span> Reports
+    </button>
+
+    <div class="nav-label">SYSTEM</div>
+
+    <button class="nav-btn" data-page="settings">
+        <span class="nav-icon">⚙</span> Settings
+    </button>
+
+    <div class="sidebar-bottom">
+        <div><span class="status-dot"></span>Local demo running</div>
+        <p>CyberShield v1.0</p>
+        <p>Social & App Protection</p>
+    </div>
+
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+
+    <div style="display:flex;align-items:center;gap:12px">
+        <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+        <div>
+            <h1 id="pageTitle">Security Dashboard</h1>
+            <p>Digital Risk Protection / <span id="breadcrumb">Overview</span></p>
+        </div>
+    </div>
+
+    <div class="top-actions">
+        <span class="demo-tag">● DEMO MODE</span>
+        <div class="avatar">CS</div>
+    </div>
+
+</header>
+
+<div class="content">
+
+<!-- DASHBOARD -->
+
+<section class="page active" id="dashboard">
+
+    <div class="welcome">
+        <div>
+            <h2>Security Overview</h2>
+            <p>Monitor brand impersonation risks across social platforms and mobile applications.</p>
+        </div>
+        <button class="btn btn-primary" onclick="runDemoScan()">↻ Run Demo Scan</button>
+    </div>
+
+    <div class="notice">
+        <strong>Demo environment:</strong> The displayed findings are sample data for your project.
+        Running a scan analyzes the local demo dataset; it does not scan real social networks or app stores.
+    </div>
+
+    <div class="grid stats">
+
+        <div class="card">
+            <div class="stat-head">
+                Total Threats
+                <span class="stat-icon">⚠</span>
+            </div>
+            <div class="stat-value" id="statTotal">0</div>
+            <div class="stat-foot"><span class="red">●</span> Potential suspicious assets</div>
+        </div>
+
+        <div class="card">
+            <div class="stat-head">
+                High Risk
+                <span class="stat-icon">🔴</span>
+            </div>
+            <div class="stat-value red" id="statHigh">0</div>
+            <div class="stat-foot">Requires priority review</div>
+        </div>
+
+        <div class="card">
+            <div class="stat-head">
+                Social Profiles
+                <span class="stat-icon">◎</span>
+            </div>
+            <div class="stat-value cyan" id="statSocial">0</div>
+            <div class="stat-foot">Profiles in demo dataset</div>
+        </div>
+
+        <div class="card">
+            <div class="stat-head">
+                Suspicious Apps
+                <span class="stat-icon">▣</span>
+            </div>
+            <div class="stat-value yellow" id="statApps">0</div>
+            <div class="stat-foot">Apps in demo dataset</div>
+        </div>
+
+    </div>
+
+    <div class="grid two-col">
+
+        <div class="card">
+
+            <div class="section-head">
+                <div>
+                    <h3>Threat Risk Distribution</h3>
+                    <p>Breakdown by severity</p>
+                </div>
+                <span class="cyan">LIVE UI</span>
+            </div>
+
+            <div class="risk-row">
+                <span>High Risk</span>
+                <div class="bar"><div id="highBar" class="bar-fill bar-red" style="width:0%"></div></div>
+                <strong id="highCount">0</strong>
+            </div>
+
+            <div class="risk-row">
+                <span>Medium Risk</span>
+                <div class="bar"><div id="mediumBar" class="bar-fill bar-yellow" style="width:0%"></div></div>
+                <strong id="mediumCount">0</strong>
+            </div>
+
+            <div class="risk-row">
+                <span>Low Risk</span>
+                <div class="bar"><div id="lowBar" class="bar-fill bar-green" style="width:0%"></div></div>
+                <strong id="lowCount">0</strong>
+            </div>
+
+            <div class="legend">
+                <span>High priority</span>
+                <span class="medium">Medium priority</span>
+                <span class="low">Low priority</span>
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="section-head">
+                <div>
+                    <h3>Recent Activity</h3>
+                    <p>Latest local demo events</p>
+                </div>
+            </div>
+
+            <div id="activityList"></div>
+
+        </div>
+
+    </div>
+
+    <div class="card table-card">
+
+        <div class="section-head table-title">
+            <div>
+                <h3>Priority Threats</h3>
+                <p>Review potentially dangerous brand impersonation</p>
+            </div>
+            <button class="btn" onclick="showPage('threats')">View All →</button>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Asset</th>
+                        <th>Platform</th>
+                        <th>Risk Score</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="dashboardThreats"></tbody>
+            </table>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- BRAND PROFILE -->
+
+<section class="page" id="brand">
+
+    <div class="welcome">
+        <div>
+            <h2>Brand Profile Management</h2>
+            <p>Configure the legitimate identity and assets of your organization.</p>
+        </div>
+    </div>
+
+    <div class="notice">
+        Brand identifiers help the demo risk engine compare suspicious assets against your configured brand.
+        Uploaded logos are not sent to any server.
+    </div>
+
+    <div class="grid two-col">
+
+        <div class="card">
+
+            <div class="section-head">
+                <div>
+                    <h3>Organization Details</h3>
+                    <p>Define your official brand identity</p>
+                </div>
+            </div>
+
+            <form id="brandForm">
+
+                <div class="form-grid">
+
+                    <div class="field full">
+                        <label for="brandName">Company / Brand Name *</label>
+                        <input class="input" id="brandName" required placeholder="e.g. CyberShield">
+                    </div>
+
+                    <div class="field">
+                        <label for="brandWebsite">Official Website</label>
+                        <input class="input" id="brandWebsite" placeholder="https://example.com">
+                    </div>
+
+                    <div class="field">
+                        <label for="brandIndustry">Industry</label>
+                        <select class="select" id="brandIndustry">
+                            <option>Cybersecurity</option>
+                            <option>Banking & Finance</option>
+                            <option>E-commerce</option>
+                            <option>Healthcare</option>
+                            <option>Education</option>
+                            <option>Technology</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="field full">
+                        <label for="brandKeywords">Brand Identifiers / Keywords</label>
+                        <textarea id="brandKeywords" placeholder="official, support, verified brand name"></textarea>
+                    </div>
+
+                    <div class="field full">
+                        <label for="brandLogo">Official Logo (optional)</label>
+                        <input class="input" id="brandLogo" type="file" accept="image/*">
+                        <small style="color:var(--muted)">Select a logo for local preview. The image is not uploaded.</small>
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">Save Brand Profile</button>
+                    <button class="btn" type="button" onclick="resetBrandForm()">Reset Form</button>
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="card">
+
+            <div class="section-head">
+                <div>
+                    <h3>Official Digital Assets</h3>
+                    <p>Maintain your trusted social profiles and apps</p>
+                </div>
+            </div>
+
+            <form id="assetForm">
+
+                <div class="field">
+                    <label for="assetType">Asset Type</label>
+                    <select class="select" id="assetType">
+                        <option>Social Media Account</option>
+                        <option>Official Company Page</option>
+                        <option>Mobile Application</option>
+                        <option>Website</option>
+                        <option>Other Identifier</option>
+                    </select>
+                </div>
+
+                <div class="field" style="margin-top:15px">
+                    <label for="assetPlatform">Platform</label>
+                    <select class="select" id="assetPlatform">
+                        <option>Instagram</option>
+                        <option>Facebook</option>
+                        <option>X</option>
+                        <option>LinkedIn</option>
+                        <option>YouTube</option>
+                        <option>Google Play</option>
+                        <option>Apple App Store</option>
+                        <option>Website</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <div class="field" style="margin-top:15px">
+                    <label for="assetName">Account / Application Name</label>
+                    <input class="input" id="assetName" required placeholder="Official brand account">
+                </div>
+
+                <div class="field" style="margin-top:15px">
+                    <label for="assetUrl">Official URL or Package ID</label>
+                    <input class="input" id="assetUrl" placeholder="https://... or package identifier">
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">+ Add Official Asset</button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="card" style="margin-top:22px">
+
+        <div class="section-head">
+            <div>
+                <h3>Registered Official Assets</h3>
+                <p>Your trusted brand references</p>
+            </div>
+            <span class="badge badge-low" id="assetCount">0 ASSETS</span>
+        </div>
+
+        <div id="assetList" class="asset-list"></div>
+
+    </div>
+
+</section>
+
+
+<!-- SOCIAL MONITORING -->
+
+<section class="page" id="social">
+
+    <div class="welcome">
+        <div>
+            <h2>Social Media Monitoring</h2>
+            <p>Review sample profiles for brand impersonation, suspicious names, and scam indicators.</p>
+        </div>
+        <button class="btn btn-primary" onclick="runDemoScan()">↻ Analyze Demo Data</button>
+    </div>
+
+    <div class="notice">
+        Similarity scores and findings are heuristic demo results, not proof of fraud.
+        Real social platform monitoring requires authorized platform APIs or other lawful data sources.
+    </div>
+
+    <div class="toolbar">
+        <input class="input search" id="socialSearch" placeholder="Search profiles, names, usernames..." oninput="renderSocial()">
+        <select class="select" id="socialRiskFilter" onchange="renderSocial()">
+            <option value="all">All Risk Levels</option>
+            <option value="High">High Risk</option>
+            <option value="Medium">Medium Risk</option>
+            <option value="Low">Low Risk</option>
+        </select>
+        <select class="select" id="socialPlatformFilter" onchange="renderSocial()">
+            <option value="all">All Platforms</option>
+            <option>Instagram</option>
+            <option>Facebook</option>
+            <option>X</option>
+            <option>LinkedIn</option>
+            <option>YouTube</option>
+        </select>
+    </div>
+
+    <div class="card table-card">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Profile / Username</th>
+                        <th>Platform</th>
+                        <th>Risk Score</th>
+                        <th>Severity</th>
+                        <th>Indicators</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="socialTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+</section>
+
+
+<!-- APP MONITORING -->
+
+<section class="page" id="apps">
+
+    <div class="welcome">
+        <div>
+            <h2>Mobile Application Monitoring</h2>
+            <p>Review suspicious app names, publishers, package identifiers, and requested permissions.</p>
+        </div>
+        <button class="btn btn-primary" onclick="runDemoScan()">↻ Analyze Demo Data</button>
+    </div>
+
+    <div class="notice">
+        App findings are simulated examples. This page does not connect to app stores, download APKs,
+        execute applications, or perform malware analysis.
+    </div>
+
+    <div class="toolbar">
+        <input class="input search" id="appSearch" placeholder="Search apps, publishers, package IDs..." oninput="renderApps()">
+        <select class="select" id="appRiskFilter" onchange="renderApps()">
+            <option value="all">All Risk Levels</option>
+            <option value="High">High Risk</option>
+            <option value="Medium">Medium Risk</option>
+            <option value="Low">Low Risk</option>
+        </select>
+    </div>
+
+    <div class="card table-card">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Application</th>
+                        <th>Store / Source</th>
+                        <th>Publisher</th>
+                        <th>Risk Score</th>
+                        <th>Severity</th>
+                        <th>Indicators</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="appTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+</section>
+
+
+<!-- THREAT INTELLIGENCE -->
+
+<section class="page" id="threats">
+
+    <div class="welcome">
+        <div>
+            <h2>Threat Intelligence Center</h2>
+            <p>Investigate potential brand threats, manage case status, and prioritize remediation.</p>
+        </div>
+        <button class="btn btn-primary" onclick="exportThreats()">↓ Export CSV</button>
+    </div>
+
+    <div class="toolbar">
+        <input class="input search" id="threatSearch" placeholder="Search threats..." oninput="renderThreats()">
+        <select class="select" id="threatRiskFilter" onchange="renderThreats()">
+            <option value="all">All Risk Levels</option>
+            <option value="High">High Risk</option>
+            <option value="Medium">Medium Risk</option>
+            <option value="Low">Low Risk</option>
+        </select>
+        <select class="select" id="threatStatusFilter" onchange="renderThreats()">
+            <option value="all">All Statuses</option>
+            <option>Under Review</option>
+            <option>Investigating</option>
+            <option>Resolved</option>
+        </select>
+    </div>
+
+    <div class="card table-card">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Threat ID</th>
+                        <th>Suspicious Asset</th>
+                        <th>Platform</th>
+                        <th>Risk</th>
+                        <th>Indicators</th>
+                        <th>Status</th>
+                        <th>Manage</th>
+                    </tr>
+                </thead>
+                <tbody id="threatTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+</section>
+
+
+<!-- REPORTS -->
+
+<section class="page" id="reports">
+
+    <div class="welcome">
+        <div>
+            <h2>Security Reports</h2>
+            <p>Generate a printable overview of the current demo threat dataset.</p>
+        </div>
+        <button class="btn btn-primary" onclick="window.print()">⎙ Print / Save PDF</button>
+    </div>
+
+    <div class="grid stats">
+
+        <div class="card">
+            <div class="stat-head">Total Findings</div>
+            <div class="stat-value" id="reportTotal">0</div>
+            <div class="stat-foot">Social and app assets</div>
+        </div>
+
+        <div class="card">
+            <div class="stat-head">High Risk</div>
+            <div class="stat-value red" id="reportHigh">0</div>
+            <div class="stat-foot">Priority investigation</div>
+        </div>
+
+        <div class="card">
+            <div class="stat-head">Investigating</div>
+            <div class="stat-value yellow" id="reportInvestigating">0</div>
+            <div class="stat-foot">Open cases</div>
+        </div>
+
+        <div class="card">
+            <div class="stat-head">Resolved</div>
+            <div class="stat-value green" id="reportResolved">0</div>
+            <div class="stat-foot">Resolved demo cases</div>
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="section-head">
+            <div>
+                <h3>Executive Summary</h3>
+                <p id="reportDate"></p>
+            </div>
+        </div>
+
+        <div id="executiveSummary" style="line-height:2;font-size:13px"></div>
+
+        <div class="form-actions no-print">
+            <button class="btn btn-primary" onclick="exportThreats()">Download CSV Report</button>
+            <button class="btn" onclick="window.print()">Print Report</button>
+        </div>
+
+    </div>
+
+    <div class="card" style="margin-top:20px">
+        <h3 style="margin-bottom:15px">Risk Management Recommendations</h3>
+        <div class="activity">
+            <div class="activity-icon">🔴</div>
+            <div>
+                <h4>High Risk</h4>
+                <p>Verify the suspicious asset, preserve relevant evidence, and escalate to the security team. Contact the relevant platform through its official reporting process when appropriate.</p>
+            </div>
+        </div>
+        <div class="activity">
+            <div class="activity-icon">🟡</div>
+            <div>
+                <h4>Medium Risk</h4>
+                <p>Check the username, publisher, domain, branding, and other indicators before deciding whether further action is needed.</p>
+            </div>
+        </div>
+        <div class="activity">
+            <div class="activity-icon">🟢</div>
+            <div>
+                <h4>Low Risk</h4>
+                <p>Continue monitoring and avoid treating a similarity match alone as proof of impersonation.</p>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+<!-- SETTINGS -->
+
+<section class="page" id="settings">
+
+    <div class="welcome">
+        <div>
+            <h2>Platform Settings</h2>
+            <p>Manage local demo data and understand the current system configuration.</p>
+        </div>
+    </div>
+
+    <div class="grid two-col">
+
+        <div class="card">
+            <h3 style="margin-bottom:20px">Monitoring Configuration</h3>
+
+            <div class="field">
+                <label>Risk Threshold for High Risk</label>
+                <select class="select" id="threshold">
+                    <option value="75">75 — Strict</option>
+                    <option value="60" selected>60 — Balanced</option>
+                    <option value="40">40 — Sensitive</option>
+                </select>
+            </div>
+
+            <div class="field" style="margin-top:17px">
+                <label>Organization Time Zone</label>
+                <select class="select" id="timezone">
+                    <option>Asia/Kolkata</option>
+                    <option>UTC</option>
+                    <option>America/New_York</option>
+                    <option>Europe/London</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+            </div>
+
+        </div>
+
+        <div class="card">
+            <h3 style="margin-bottom:15px">System Information</h3>
+
+            <div class="activity">
+                <div class="activity-icon">🛡</div>
+                <div>
+                    <h4>CyberShield Demo</h4>
+                    <p>Version 1.0 — Frontend prototype</p>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="activity-icon">💾</div>
+                <div>
+                    <h4>Local Data Storage</h4>
+                    <p>Brand details, assets, settings, and case status are stored in this browser when storage is available.</p>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="activity-icon">🔌</div>
+                <div>
+                    <h4>External Integrations</h4>
+                    <p>No real social media API, app-store API, server, or authentication provider is connected.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card" style="margin-top:22px">
+        <h3 style="margin-bottom:10px">Demo Data Management</h3>
+        <p style="color:var(--muted);font-size:12px;line-height:1.8">
+            Restore the original sample dataset if you have modified case statuses or removed sample findings.
+            This action resets the local demo findings and activities.
+        </p>
+        <div class="form-actions">
+            <button class="btn btn-danger" onclick="resetDemoData()">Reset Demo Data</button>
+        </div>
+    </div>
+
+</section>
+
+<footer>
+    CyberShield Digital Risk Protection Platform · College Project Prototype<br>
+    Sample findings only. A risk score is an investigative signal, not a verified fraud determination.
+</footer>
+
+</div>
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+"use strict";
+
+/* ========================================
+   CYBERSHIELD DIGITAL RISK PROTECTION
+   Single-file frontend project
+======================================== */
+
+/* Safe local storage helpers */
+
+function loadJSON(key, fallback) {
+    try {
+        const value = localStorage.getItem(key);
+        return value ? JSON.parse(value) : fallback;
+    } catch (e) {
+        return fallback;
+    }
+}
+
+function saveJSON(key, value) {
+    try {
+        localStorage.setItem(key, JSON.stringify(value));
+    } catch (e) {
+        notify("Browser storage is unavailable. Changes may not persist.");
+    }
+}
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[char]);
+}
+
+function safeURL(value) {
+    try {
+        const url = new URL(value);
+        return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+    } catch (e) {
+        return "";
+    }
+}
+
+function notify(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.style.display = "block";
+
+    clearTimeout(notify.timer);
+    notify.timer = setTimeout(() => {
+        toast.style.display = "none";
+    }, 3000);
+}
+
+
+/* Sample threat dataset */
+
+const initialThreats = [
+    {
+        id: "DRP-1001",
+        type: "Social",
+        name: "CyberShield Support",
+        username: "@cybershield_support_help",
+        platform: "Instagram",
+        score: 92,
+        indicators: ["Similar brand name", "Unverified support claim"],
+        status: "Under Review"
+    },
+    {
+        id: "DRP-1002",
+        type: "Social",
+        name: "CyberShield Rewards",
+        username: "@cybershield_rewards",
+        platform: "Facebook",
+        score: 84,
+        indicators: ["Brand impersonation indicators", "Promotional claim"],
+        status: "Investigating"
+    },
+    {
+        id: "DRP-1003",
+        type: "Social",
+        name: "Cyber Shield Official",
+        username: "@cyber_shield_official",
+        platform: "X",
+        score: 65,
+        indicators: ["Similar display name"],
+        status: "Under Review"
+    },
+    {
+        id: "DRP-1004",
+        type: "Social",
+        name: "CyberShield Community",
+        username: "@cybershield_community",
+        platform: "LinkedIn",
+        score: 31,
+        indicators: ["Name similarity"],
+        status: "Under Review"
+    },
+    {
+        id: "DRP-1005",
+        type: "App",
+        name: "CyberShield Security Pro",
+        username: "com.example.cybershield.pro",
+        platform: "Google Play (sample)",
+        publisher: "Unknown Publisher",
+        score: 89,
+        indicators: ["Similar app name", "Unverified publisher"],
+        status: "Under Review"
+    },
+    {
+        id: "DRP-1006",
+        type: "App",
+        name: "CyberShield Wallet",
+        username: "com.example.cybershield.wallet",
+        platform: "Third-party listing (sample)",
+        publisher: "CS Mobile Labs",
+        score: 77,
+        indicators: ["Brand name in package", "Publisher mismatch"],
+        status: "Investigating"
+    },
+    {
+        id: "DRP-1007",
+        type: "App",
+        name: "Shield Security Helper",
+        username: "com.example.shield.helper",
+        platform: "Apple App Store (sample)",
+        publisher: "Example Studio",
+        score: 42,
+        indicators: ["Related security terminology"],
+        status: "Under Review"
+    }
+];
+
+const initialAssets = [
+    {
+        id: "AST-001",
+        type: "Social Media Account",
+        platform: "LinkedIn",
+        name: "CyberShield Official",
+        url: "https://www.linkedin.com/"
+    },
+    {
+        id: "AST-002",
+        type: "Social Media Account",
+        platform: "Instagram",
+        name: "CyberShield Official",
+        url: "https://www.instagram.com/"
+    },
+    {
+        id: "AST-003",
+        type: "Mobile Application",
+        platform: "Google Play",
+        name: "CyberShield",
+        url: "com.example.cybershield"
+    }
+];
+
+let threats = loadJSON("cs_threats", null);
+let assets = loadJSON("cs_assets", null);
+let activities = loadJSON("cs_activities", null);
+
+if (!Array.isArray(threats)) threats = structuredClone(initialThreats);
+if (!Array.isArray(assets)) assets = structuredClone(initialAssets);
+if (!Array.isArray(activities)) activities = [];
+
+let brand = loadJSON("cs_brand", {
+    name: "CyberShield",
+    website: "https://example.com",
+    industry: "Cybersecurity",
+    keywords: "official, security, support"
+});
+
+let settings = loadJSON("cs_settings", {
+    threshold: 60,
+    timezone: "Asia/Kolkata"
+});
+
+function persist() {
+    saveJSON("cs_threats", threats);
+    saveJSON("cs_assets", assets);
+    saveJSON("cs_activities", activities);
+    saveJSON("cs_brand", brand);
+    saveJSON("cs_settings", settings);
+}
+
+function severity(score) {
+    const threshold = Number(settings.threshold) || 60;
+
+    if (score >= threshold) return "High";
+    if (score >= 40) return "Medium";
+    return "Low";
+}
+
+function badge(score) {
+    const level = severity(score);
+    const css = level === "High" ? "badge-high" :
+                level === "Medium" ? "badge-medium" : "badge-low";
+
+    return `<span class="badge ${css}">${level}</span>`;
+}
+
+function statusBadge(status) {
+    const css = status === "Resolved" ? "badge-resolved" :
+                status === "Under Review" ? "badge-pending" :
+                "badge-medium";
+
+    return `<span class="badge ${css}">${escapeHTML(status)}</span>`;
+}
+
+function addActivity(title, detail) {
+    activities.unshift({
+        title,
+        detail,
+        time: new Date().toLocaleString()
+    });
+
+    activities = activities.slice(0, 8);
+    persist();
+    renderActivity();
+}
+
+
+/* Navigation */
+
+const pageTitles = {
+    dashboard: ["Security Dashboard", "Overview"],
+    brand: ["Brand Profile Management", "Brand Profile"],
+    social: ["Social Media Monitoring", "Social Monitoring"],
+    apps: ["Mobile Application Monitoring", "App Monitoring"],
+    threats: ["Threat Intelligence Center", "Threat Intelligence"],
+    reports: ["Security Reports", "Reports"],
+    settings: ["Platform Settings", "Settings"]
+};
+
+function showPage(page) {
+    if (!pageTitles[page]) return;
+
+    document.querySelectorAll(".page").forEach(element => {
+        element.classList.toggle("active", element.id === page);
+    });
+
+    document.querySelectorAll(".nav-btn").forEach(button => {
+        button.classList.toggle("active", button.dataset.page === page);
+    });
+
+    document.getElementById("pageTitle").textContent = pageTitles[page][0];
+    document.getElementById("breadcrumb").textContent = pageTitles[page][1];
+
+    document.getElementById("sidebar").classList.remove("open");
+
+    if (page === "dashboard") renderDashboard();
+    if (page === "brand") renderAssets();
+    if (page === "social") renderSocial();
+    if (page === "apps") renderApps();
+    if (page === "threats") renderThreats();
+    if (page === "reports") renderReports();
+    if (page === "settings") renderSettings();
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.querySelectorAll(".nav-btn").forEach(button => {
+    button.addEventListener("click", () => showPage(button.dataset.page));
+});
+
+function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("open");
+}
+
+
+/* Dashboard */
+
+function renderDashboard() {
+    const total = threats.length;
+    const high = threats.filter(t => severity(t.score) === "High").length;
+    const medium = threats.filter(t => severity(t.score) === "Medium").length;
+    const low = threats.filter(t => severity(t.score) === "Low").length;
+    const social = threats.filter(t => t.type === "Social").length;
+    const apps = threats.filter(t => t.type === "App").length;
+
+    document.getElementById("statTotal").textContent = total;
+    document.getElementById("statHigh").textContent = high;
+    document.getElementById("statSocial").textContent = social;
+    document.getElementById("statApps").textContent = apps;
+
+    document.getElementById("highCount").textContent = high;
+    document.getElementById("mediumCount").textContent = medium;
+    document.getElementById("lowCount").textContent = low;
+
+    const percent = n => total ? (n / total * 100) : 0;
+
+    document.getElementById("highBar").style.width = percent(high) + "%";
+    document.getElementById("mediumBar").style.width = percent(medium) + "%";
+    document.getElementById("lowBar").style.width = percent(low) + "%";
+
+    const top = [...threats]
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5);
+
+    document.getElementById("dashboardThreats").innerHTML = top.length
+        ? top.map(t => `
+            <tr>
+                <td>${escapeHTML(t.name)}<small>${escapeHTML(t.username)}</small></td>
+                <td>${escapeHTML(t.platform)}</td>
+                <td><strong>${t.score}/100</strong></td>
+                <td>${badge(t.score)}</td>
+                <td>${statusBadge(t.status)}</td>
+                <td><button class="btn" onclick="investigate('${t.id}')">Review</button></td>
+            </tr>
+        `).join("")
+        : `<tr><td colspan="6" class="empty">No findings available.</td></tr>`;
+
+    renderActivity();
+}
+
+function renderActivity() {
+    const list = document.getElementById("activityList");
+
+    if (!activities.length) {
+        list.innerHTML = `
+            <div class="empty">
+                No recent activity.<br>Run a demo scan to create an activity record.
+            </div>`;
+        return;
+    }
+
+    list.innerHTML = activities.slice(0, 4).map(a => `
+        <div class="activity">
+            <div class="activity-icon">◈</div>
+            <div>
+                <h4>${escapeHTML(a.title)}</h4>
+                <p>${escapeHTML(a.detail)}</p>
+                <time>${escapeHTML(a.time)}</time>
+            </div>
+        </div>
+    `).join("");
+}
+
+
+/* Social Monitoring */
+
+function renderSocial() {
+    const q = document.getElementById("socialSearch").value.toLowerCase();
+    const risk = document.getElementById("socialRiskFilter").value;
+    const platform = document.getElementById("socialPlatformFilter").value;
+
+    const list = threats.filter(t => {
+        return t.type === "Social" &&
+            (t.name + " " + t.username + " " + t.platform + " " + t.indicators.join(" "))
+                .toLowerCase().includes(q) &&
+            (risk === "all" || severity(t.score) === risk) &&
+            (platform === "all" || t.platform === platform);
+    });
+
+    document.getElementById("socialTable").innerHTML = list.length
+        ? list.map(t => `
+            <tr>
+                <td>${escapeHTML(t.name)}<small>${escapeHTML(t.username)}</small></td>
+                <td>${escapeHTML(t.platform)}</td>
+                <td><strong>${t.score}/100</strong></td>
+                <td>${badge(t.score)}</td>
+                <td>${t.indicators.map(i => escapeHTML(i)).join("<br>")}</td>
+                <td>${statusBadge(t.status)}</td>
+                <td>
+                    <div class="table-actions">
+                        <button class="btn" onclick="investigate('${t.id}')">Review</button>
+                    </div>
+                </td>
+            </tr>
+        `).join("")
+        : `<tr><td colspan="7" class="empty">No matching social profiles found.</td></tr>`;
+}
+
+
+/* Mobile Application Monitoring */
+
+function renderApps() {
+    const q = document.getElementById("appSearch").value.toLowerCase();
+    const risk = document.getElementById("appRiskFilter").value;
+
+    const list = threats.filter(t => {
+        return t.type === "App" &&
+            (t.name + " " + t.username + " " + t.platform + " " +
+             (t.publisher || "") + " " + t.indicators.join(" "))
+                .toLowerCase().includes(q) &&
+            (risk === "all" || severity(t.score) === risk);
+    });
+
+    document.getElementById("appTable").innerHTML = list.length
+        ? list.map(t => `
+            <tr>
+                <td>${escapeHTML(t.name)}<small>${escapeHTML(t.username)}</small></td>
+                <td>${escapeHTML(t.platform)}</td>
+                <td>${escapeHTML(t.publisher || "Unknown")}</td>
+                <td><strong>${t.score}/100</strong></td>
+                <td>${badge(t.score)}</td>
+                <td>${t.indicators.map(i => escapeHTML(i)).join("<br>")}</td>
+                <td><button class="btn" onclick="investigate('${t.id}')">Review</button></td>
+            </tr>
+        `).join("")
+        : `<tr><td colspan="7" class="empty">No matching applications found.</td></tr>`;
+}
+
+
+/* Threat Intelligence */
+
+function renderThreats() {
+    const q = document.getElementById("threatSearch").value.toLowerCase();
+    const risk = document.getElementById("threatRiskFilter").value;
+    const status = document.getElementById("threatStatusFilter").value;
+
+    const list = threats.filter(t => {
+        return (t.id + " " + t.name + " " + t.username + " " +
+                t.platform + " " + t.indicators.join(" "))
+                    .toLowerCase().includes(q) &&
+            (risk === "all" || severity(t.score) === risk) &&
+            (status === "all" || t.status === status);
+    });
+
+    document.getElementById("threatTable").innerHTML = list.length
+        ? list.map(t => `
+            <tr>
+                <td><strong>${escapeHTML(t.id)}</strong><small>${escapeHTML(t.type)}</small></td>
+                <td>${escapeHTML(t.name)}<small>${escapeHTML(t.username)}</small></td>
+                <td>${escapeHTML(t.platform)}</td>
+                <td>${t.score}/100 ${badge(t.score)}</td>
+                <td>${t.indicators.map(i => escapeHTML(i)).join("<br>")}</td>
+                <td>${statusBadge(t.status)}</td>
+                <td>
+                    <div class="table-actions">
+                        <button class="btn" onclick="investigate('${t.id}')">Review</button>
+                        <button class="btn btn-success" onclick="resolveThreat('${t.id}')">Resolve</button>
+                    </div>
+                </td>
+            </tr>
+        `).join("")
+        : `<tr><td colspan="7" class="empty">No matching threats found.</td></tr>`;
+}
+
+function investigate(id) {
+    const t = threats.find(item => item.id === id);
+    if (!t) return;
+
+    const message =
+        "Threat: " + t.name + "\n" +
+        "Platform: " + t.platform + "\n" +
+        "Risk Score: " + t.score + "/100\n" +
+        "Severity: " + severity(t.score) + "\n" +
+        "Indicators: " + t.indicators.join(", ") + "\n\n" +
+        "This is a sample finding, not a confirmed fraud determination.\n\n" +
+        "Move this case to Investigating?";
+
+    if (confirm(message)) {
+        t.status = "Investigating";
+        persist();
+        addActivity("Threat investigation started", t.name + " — " + t.id);
+        renderAll();
+        notify("Case moved to Investigating.");
+    }
+}
+
+function resolveThreat(id) {
+    const t = threats.find(item => item.id === id);
+    if (!t) return;
+
+    if (!confirm("Mark " + t.id + " as Resolved in this demo?")) return;
+
+    t.status = "Resolved";
+    persist();
+    addActivity("Threat marked resolved", t.name + " — " + t.id);
+    renderAll();
+    notify("Threat status updated.");
+}
+
+
+/* Brand Profile */
+
+function loadBrandForm() {
+    document.getElementById("brandName").value = brand.name || "";
+    document.getElementById("brandWebsite").value = brand.website || "";
+    document.getElementById("brandIndustry").value = brand.industry || "Other";
+    document.getElementById("brandKeywords").value = brand.keywords || "";
+}
+
+document.getElementById("brandForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById("brandName").value.trim();
+    const website = document.getElementById("brandWebsite").value.trim();
+
+    if (!name) {
+        notify("Please enter your brand name.");
+        return;
+    }
+
+    if (website && !safeURL(website)) {
+        notify("Enter a valid official website URL using HTTP or HTTPS.");
+        return;
+    }
+
+    brand = {
+        ...brand,
+        name,
+        website,
+        industry: document.getElementById("brandIndustry").value,
+        keywords: document.getElementById("brandKeywords").value.trim()
+    };
+
+    persist();
+    addActivity("Brand profile updated", name);
+    notify("Brand profile saved successfully.");
+});
+
+function resetBrandForm() {
+    loadBrandForm();
+    notify("Brand form restored to saved values.");
+}
+
+document.getElementById("brandLogo").addEventListener("change", function() {
+    const file = this.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+        notify("Please select an image file.");
+        this.value = "";
+        return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+        notify("Choose a logo smaller than 2 MB.");
+        this.value = "";
+        return;
+    }
+
+    notify("Logo selected for this session. It has not been uploaded.");
+});
+
+document.getElementById("assetForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById("assetName").value.trim();
+    const url = document.getElementById("assetUrl").value.trim();
+
+    if (url && /^https?:\/\//i.test(url) && !safeURL(url)) {
+        notify("Please enter a valid HTTP or HTTPS URL.");
+        return;
+    }
+
+    if (!name) return;
+
+    assets.push({
+        id: "AST-" + Date.now(),
+        type: document.getElementById("assetType").value,
+        platform: document.getElementById("assetPlatform").value,
+        name,
+        url
+    });
+
+    persist();
+    this.reset();
+    renderAssets();
+    addActivity("Official asset registered", name);
+    notify("Official asset added.");
+});
+
+function renderAssets() {
+    document.getElementById("assetCount").textContent = assets.length + " ASSETS";
+
+    const list = document.getElementById("assetList");
+
+    list.innerHTML = assets.length
+        ? assets.map(a => `
+            <div class="asset">
+                <div>
+                    <h4>${escapeHTML(a.name)}</h4>
+                    <p>${escapeHTML(a.type)} · ${escapeHTML(a.platform)}</p>
+                    <p>${escapeHTML(a.url || "No URL or identifier provided")}</p>
+                </div>
+                <div class="asset-actions">
+                    <button class="btn btn-danger" onclick="deleteAsset('${a.id}')">Delete</button>
+                </div>
+            </div>
+        `).join("")
+        : `<div class="empty">No official assets registered yet.</div>`;
+}
+
+function deleteAsset(id) {
+    const asset = assets.find(a => a.id === id);
+    if (!asset) return;
+
+    if (!confirm("Delete official asset: " + asset.name + "?")) return;
+
+    assets = assets.filter(a => a.id !== id);
+    persist();
+    renderAssets();
+    addActivity("Official asset deleted", asset.name);
+    notify("Official asset removed.");
+}
+
+
+/* Demo Scan and Heuristic Risk Analysis */
+
+function calculateDemoRisk(item) {
+    const brandName = (brand.name || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    const candidate = (item.name + " " + item.username).toLowerCase()
+        .replace(/[^a-z0-9]/g, "");
+
+    let score = 15;
+
+    if (brandName && candidate.includes(brandName)) score += 40;
+
+    if (/support|official|verify|security|reward|wallet|help/i.test(
+        item.name + " " + item.username
+    )) score += 15;
+
+    if (/unknown|third-party/i.test(item.platform + " " + (item.publisher || ""))) {
+        score += 10;
+    }
+
+    if (item.type === "App" && item.publisher === "Unknown Publisher") {
+        score += 15;
+    }
+
+    return Math.min(99, score);
+}
+
+function runDemoScan() {
+    let updated = 0;
+
+    threats.forEach(t => {
+        // Demo scan: calculate scores for local sample records only.
+        // It does not access external websites or social networks.
+        t.score = calculateDemoRisk(t);
+        updated++;
+    });
+
+    persist();
+    addActivity("Demo scan completed", updated + " local sample records analyzed.");
+    renderAll();
+
+    notify("Demo scan complete. " + updated + " sample records analyzed.");
+}
+
+
+/* CSV Export */
+
+function exportThreats() {
+    const headers = [
+        "Threat ID", "Type", "Name", "Username / Package",
+        "Platform", "Risk Score", "Severity", "Indicators", "Status"
+    ];
+
+    const rows = threats.map(t => [
+        t.id, t.type, t.name, t.username,
+        t.platform, t.score, severity(t.score),
+        t.indicators.join("; "), t.status
+    ]);
+
+    const csv = [headers, ...rows].map(row =>
+        row.map(value =>
+            '"' + String(value ?? "").replace(/"/g, '""') + '"'
+        ).join(",")
+    ).join("\r\n");
+
+    const blob = new Blob(["\uFEFF" + csv], {
+        type: "text/csv;charset=utf-8;"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "cybershield-threat-report.csv";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    notify("Threat report exported.");
+}
+
+
+/* Reports */
+
+function renderReports() {
+    const high = threats.filter(t => severity(t.score) === "High").length;
+    const investigating = threats.filter(t => t.status === "Investigating").length;
+    const resolved = threats.filter(t => t.status === "Resolved").length;
+    const social = threats.filter(t => t.type === "Social").length;
+    const apps = threats.filter(t => t.type === "App").length;
+
+    document.getElementById("reportTotal").textContent = threats.length;
+    document.getElementById("reportHigh").textContent = high;
+    document.getElementById("reportInvestigating").textContent = investigating;
+    document.getElementById("reportResolved").textContent = resolved;
+
+    document.getElementById("reportDate").textContent =
+        "Generated: " + new Date().toLocaleString();
+
+    document.getElementById("executiveSummary").innerHTML = `
+        <p><strong>Organization:</strong> ${escapeHTML(brand.name || "Not configured")}</p>
+        <p><strong>Industry:</strong> ${escapeHTML(brand.industry || "Not specified")}</p>
+        <p><strong>Registered official assets:</strong> ${assets.length}</p>
+        <p><strong>Social findings:</strong> ${social}</p>
+        <p><strong>Application findings:</strong> ${apps}</p>
+        <p><strong>High-risk findings:</strong> ${high}</p>
+        <p><strong>Cases under investigation:</strong> ${investigating}</p>
+        <p><strong>Resolved cases:</strong> ${resolved}</p>
+        <p style="margin-top:15px;color:var(--muted)">
+            This report summarizes local demonstration records.
+            Scores represent heuristic indicators and require verification
+            before any enforcement or remediation decision.
+        </p>
+    `;
+}
+
+
+/* Settings */
+
+function renderSettings() {
+    document.getElementById("threshold").value = String(settings.threshold);
+    document.getElementById("timezone").value = settings.timezone;
+}
+
+function saveSettings() {
+    settings.threshold = Number(document.getElementById("threshold").value);
+    settings.timezone = document.getElementById("timezone").value;
+
+    persist();
+    renderAll();
+
+    addActivity("System settings updated",
+        "High-risk threshold set to " + settings.threshold + ".");
+
+    notify("Settings saved.");
+}
+
+function resetDemoData() {
+    if (!confirm("Reset demo findings, official assets, and activity history?")) return;
+
+    threats = structuredClone(initialThreats);
+    assets = structuredClone(initialAssets);
+    activities = [];
+
+    persist();
+    renderAll();
+
+    notify("Demo dataset restored.");
+}
+
+
+/* Rendering helpers */
+
+function renderAll() {
+    renderDashboard();
+    renderAssets();
+    renderSocial();
+    renderApps();
+    renderThreats();
+    renderReports();
+    renderSettings();
+}
+
+
+/* Initialize application */
+
+loadBrandForm();
+renderAll();
+
+</script>
+
+</body>
+</html>
+```
